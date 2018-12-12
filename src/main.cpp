@@ -75,7 +75,7 @@ Actions:
 
 #include <iostream>
 #include <time.h>
-#include <jthread/jmutexautolock.h>
+#include <jmutexautolock.h>
 namespace jthread {} // JThread 1.2 support
 using namespace jthread; // JThread 1.3 support
 #include "common_irrlicht.h"

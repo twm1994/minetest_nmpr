@@ -2,7 +2,7 @@
 #include "utility.h"
 #include <iostream>
 #include "clientserver.h"
-#include <jthread/jmutexautolock.h>
+#include <jmutexautolock.h>
 namespace jthread {} // JThread 1.2 support
 using namespace jthread; // JThread 1.3 support
 #include "main.h"

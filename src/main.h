@@ -5,7 +5,7 @@
 #ifndef MAIN_HEADER
 #define MAIN_HEADER
 
-#include <jthread/jmutex.h>
+#include <jmutex.h>
 namespace jthread {} // JThread 1.2 support
 using namespace jthread; // JThread 1.3 support
 

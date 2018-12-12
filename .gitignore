@@ -43,3 +43,8 @@ locale/
 irrlicht-1.8.4/
 jthread-1.3.3/
 *.htm
+
+## Dynamic files
+Backup/
+Release/
+build-output/
