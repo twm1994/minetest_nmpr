@@ -52,7 +52,7 @@ Actions:
 	This allows one to move around with the player and see what
 	is actually drawn behind solid things etc.
 */
-#define FIELD_OF_VIEW_TEST 0
+#define FIELD_OF_VIEW_TEST 1
 
 // Enable unit tests
 #define ENABLE_TESTS 0

@@ -85,7 +85,9 @@ private:
 	v3f m_position;
 	//scene::ISceneNode* m_bill;
 	scene::IBillboardSceneNode* m_bill;
-	
+	scene::IAnimatedMesh*           avatar;
+	scene::IAnimatedMeshSceneNode*  avatar_node;
+	video::SMaterial                material;
 	core::aabbox3d<f32> m_box;
 };
 
