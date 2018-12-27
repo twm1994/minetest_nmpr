@@ -46,5 +46,6 @@ jthread-1.3.3/
 
 ## Dynamic files
 Backup/
+Debug/
 Release/
 build-output/

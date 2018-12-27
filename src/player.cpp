@@ -41,7 +41,7 @@ Player::Player(
 
 	//	// ISceneNode stores a member called SceneManager
 	//	video::IVideoDriver* driver = SceneManager->getVideoDriver();
-	//	
+	//
 	//	m_bill->setMaterialFlag(video::EMF_LIGHTING, false);
 	//	//m_bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
 	//	//m_bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
@@ -58,7 +58,7 @@ Player::Player(
 	material.setTexture(0,
 		driver->getTexture("../data/sydney.bmp"));
 	avatar = mgr->getMesh("../data/sydney.md2");
-	avatar_node = mgr->addAnimatedMeshSceneNode(avatar);
+	avatar_node = mgr->addAnimatedMeshSceneNode(avatar,this);
 	avatar_node->setScale(v3f(.1, .1, .1));
 	avatar_node->setPosition(v3f(0, BS + BS / 3, 0));
 	avatar_node->setRotation(v3f(0, 270, 0));

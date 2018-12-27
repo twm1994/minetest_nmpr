@@ -50,14 +50,14 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Include;..\jthread\jthread-1.2.1\src;..\irrlicht\irrlicht-1.7.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\all_minetest\minetest_nmpr\include\irrlicht;D:\all_minetest\minetest_nmpr\include;D:\all_minetest\minetest_nmpr\include\jthread;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib;..\jthread\jthread-1.2.1\Release;..\irrlicht\irrlicht-1.7.1\lib\Win32-visualstudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\all_minetest\minetest_nmpr\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
@@ -70,14 +70,15 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include;D:\minetest_nmpr_WinSDK_10.0.17134.0_VSv141\jthread-1.3.3\src;D:\minetest_nmpr_WinSDK_10.0.17134.0_VSv141\jthread-1.3.3\build-output\src;D:\minetest_nmpr_WinSDK_10.0.17134.0_VSv141\irrlicht-1.8.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include;D:\all_minetest\minetest_nmpr\include\jthread;D:\all_minetest\minetest_nmpr\include\irrlicht;D:\all_minetest\minetest_nmpr\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\lib;D:\minetest_nmpr_WinSDK_10.0.17134.0_VSv141\jthread-1.3.3\build-output\src\Release;D:\minetest_nmpr_WinSDK_10.0.17134.0_VSv141\irrlicht-1.8.4\lib\Win32-visualstudio;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\lib;D:\all_minetest\minetest_nmpr\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
