@@ -40,16 +40,16 @@ void * MapUpdateThread::Thread()
 {
 	if(map == NULL)
 		return NULL;
-		
+
 	ThreadStarted();
 
 	while(getRun())
 	{
 		//std::cout<<"UpdateThread running"<<std::endl;
-		
+
 		bool did_something;
 		did_something = map->updateChangedVisibleArea();
-		
+
 		if(did_something == false)
 			sleep_ms(500);
 	}
@@ -63,10 +63,11 @@ Map::Map():
 	camera_position(0,0,0),
 	camera_direction(0,0,1),
 	updater(this),
-	m_heightmap(32, 66.0, 0.6, 0.0),
-	//m_heightmap(16, 40.0, 0.6, 0.0),
+	//m_heightmap(16, 66.0, 0.0, 0.0),
+	// m_heightmap(32, 66.0, 0.6, 0.0),
+	m_heightmap(16, 40.0, 0.6, 0.0),
 	//m_heightmap(16, 0.0, 0.0, 0.0),
-	//m_heightmap(4, 0.0, 0.0, 0.0),
+	// m_heightmap(4, 0.0, 0.0, 0.0),
 	m_sector_cache(NULL),
 	m_hwrapper(this),
 	drawoffset(0,0,0)
@@ -77,9 +78,9 @@ Map::Map():
 	assert(m_getsector_mutex.IsInitialized());
 	assert(m_gensector_mutex.IsInitialized());
 	assert(camera_mutex.IsInitialized());
-	
+
 	// Get this so that the player can stay on it at first
-	//getSector(v2s16(0,0));
+	// getSector(v2s16(0,0));
 }
 
 Map::~Map()
@@ -122,7 +123,7 @@ MapSector * Map::getSectorNoGenerate(v2s16 p)
 		MapSector * ref(m_sector_cache);
 		return ref;
 	}
-	
+
 	core::map<v2s16, MapSector*>::Node *n = m_sectors.find(p);
 	// If sector doesn't exist, throw an exception
 	if(n == NULL)
@@ -134,15 +135,15 @@ MapSector * Map::getSectorNoGenerate(v2s16 p)
 		//sector = NULL;
 		throw InvalidPositionException();
 	}
-	
+
 	MapSector *sector = n->getValue();
-	
+
 	// Cache the last result
 	m_sector_cache_p = p;
 	m_sector_cache = sector;
 
 	//MapSector * ref(sector);
-	
+
 	return sector;
 }
 
@@ -156,11 +157,11 @@ MapSector * Map::getSector(v2s16 p2d)
 /*
 	If sector doesn't exist, returns NULL
 	Otherwise returns what the sector returns
-	
+
 	TODO: Change this to use exceptions?
 */
 MapBlock * Map::getBlockNoCreate(v3s16 p3d)
-{	
+{
 	/*std::cout<<"Map::getBlockNoCreate(("
 			<<p3d.X<<","<<p3d.Y<<","<<p3d.Z
 			<<")"<<std::endl;*/
@@ -172,7 +173,7 @@ MapBlock * Map::getBlockNoCreate(v3s16 p3d)
 	//JMutexAutoLock(sector->mutex);
 
 	MapBlock * blockref = sector->getBlockNoCreate(p3d.Y);
-	
+
 	return blockref;
 }
 
@@ -191,18 +192,18 @@ MapBlock * Map::getBlock(v3s16 p3d)
 			<<std::endl;*/
 
 	MapSector *sector = sref;
-	
+
 	//JMutexAutoLock(sector->mutex);
 
 	MapBlock * blockref = sector->getBlock(p3d.Y);
-	
+
 	/*std::cout<<"Map::GetBlock(): blockref->getRefcount()="
 			<<blockref->getRefcount()
 			<<std::endl;*/
 
 	/*std::cout<<"Map::GetBlock(): "
 			<<"Got block. Now returning."<<std::endl;*/
-	
+
 	return blockref;
 }
 
@@ -279,12 +280,12 @@ void Map::unLightNeighbors(v3s16 pos, f32 oldlight,
 		v3s16(0,-1,0), // bottom
 		v3s16(-1,0,0), // left
 	};
-	
+
 	// Loop through 6 neighbors
 	for(u16 i=0; i<6; i++){
 		// Get the position of the neighbor node
 		v3s16 n2pos = pos + dirs[i];
-		
+
 		// Get the block where the node is located
 		v3s16 blockpos = getNodeBlockPos(n2pos);
 		MapBlock *block;
@@ -296,18 +297,18 @@ void Map::unLightNeighbors(v3s16 pos, f32 oldlight,
 			// If block is inexistent, move to next one.
 			continue;
 		}
-		
+
 		// Find if block is in cache container
 		core::map<v3s16, MapBlock * >::Node *cacheblocknode;
 		cacheblocknode = modified_blocks.find(blockpos);
-		
+
 		// If the block is not found in the cache
 		if(cacheblocknode == NULL)
 		{
 			/*
 				Add block to cache container. It could be a 'set' but
 				there is no such thing in Irrlicht.
-				
+
 				We can use the pointer as the value of a map just fine,
 				it gets nicely cached that way, too.
 			*/
@@ -318,7 +319,7 @@ void Map::unLightNeighbors(v3s16 pos, f32 oldlight,
 		v3s16 relpos = n2pos - blockpos * MAP_BLOCKSIZE;
 		// Get node straight from the block (fast!)
 		MapNode *n2 = block->getNodePtr(relpos);
-		
+
 		/*
 			If the neighbor is dimmer than what was specified
 			as oldlight (the light of the previous node)...
@@ -365,9 +366,9 @@ void Map::lightNeighbors(v3s16 pos,
 		v3s16(0,-1,0), // bottom
 		v3s16(-1,0,0), // left
 	};
-	
+
 	core::list<v3s16> neighbour_cache;
-	
+
 	/*
 		Initialize block cache
 		(using center node as a starting position)
@@ -381,7 +382,7 @@ void Map::lightNeighbors(v3s16 pos,
 	{
 		return;
 	}
-	
+
 	// Calculate relative position in block
 	v3s16 relpos = pos - blockpos_last * MAP_BLOCKSIZE;
 	// Get node straight from the block (fast!)
@@ -394,7 +395,7 @@ void Map::lightNeighbors(v3s16 pos,
 	for(u16 i=0; i<6; i++){
 		// Get the position of the neighbor node
 		v3s16 n2pos = pos + dirs[i];
-		
+
 		// Get the block where the node is located
 		v3s16 blockpos = getNodeBlockPos(n2pos);
 
@@ -411,25 +412,25 @@ void Map::lightNeighbors(v3s16 pos,
 			// Find if block is in cache container
 			core::map<v3s16, MapBlock * >::Node *cacheblocknode;
 			cacheblocknode = modified_blocks.find(blockpos);
-			
+
 			// If the block is not found in the cache
 			if(cacheblocknode == NULL)
 			{
 				/*
 					Add block to cache container. It could be a 'set' but
 					there is no such thing in Irrlicht.
-					
+
 					We can use the pointer as the value of a map just fine,
 					it gets nicely cached that way, too.
 				*/
 				modified_blocks.insert(blockpos, block);
 			}
-			
+
 			// Calculate relative position in block
 			v3s16 relpos = n2pos - blockpos * MAP_BLOCKSIZE;
 			// Get node straight from the block (fast!)
 			MapNode *n2 = block->getNodePtr(relpos);
-			
+
 			/*
 				If the neighbor is dimmer than what was specified
 				as oldlight (the light of the previous node)...
@@ -471,7 +472,7 @@ v3s16 Map::getBrightestNeighbour(v3s16 p)
 		v3s16(0,-1,0), // bottom
 		v3s16(-1,0,0), // left
 	};
-	
+
 	f32 brightest_light = -1.0;
 	v3s16 brightest_pos(0,0,0);
 
@@ -510,7 +511,7 @@ s16 Map::propagateSunlight(v3s16 start,
 	for(; ; y--)
 	{
 		v3s16 pos(start.X, y, start.Z);
-		
+
 		v3s16 blockpos = getNodeBlockPos(pos);
 		MapBlock *block;
 		try{
@@ -536,7 +537,7 @@ s16 Map::propagateSunlight(v3s16 start,
 	}
 	return y + 1;
 }
-		
+
 void Map::updateLighting(core::list< MapBlock*> & a_blocks,
 		core::map<v3s16, MapBlock*> & modified_blocks)
 {
@@ -546,9 +547,9 @@ void Map::updateLighting(core::list< MapBlock*> & a_blocks,
 	/*status.setTodo(a_blocks.getSize());
 	status.setDone(0);
 	status.setText(L"Updating lighting");*/
-	
+
 	std::cout<<"Flooding direct sunlight"<<std::endl;
-	
+
 	// Copy list
 	core::list< MapBlock * > temp_blocks = a_blocks;
 
@@ -559,7 +560,7 @@ void Map::updateLighting(core::list< MapBlock*> & a_blocks,
 
 	while(temp_blocks.empty() == false){
 		// Get block with highest position in Y
-		
+
 		core::list< MapBlock * >::Iterator highest_i = temp_blocks.end();
 		v3s16 highest_pos(0,-32768,0);
 
@@ -599,11 +600,11 @@ void Map::updateLighting(core::list< MapBlock*> & a_blocks,
 
 	/*
 		Spread light to air that hasn't got light
-		
+
 		TODO: This shouldn't have to be done to every block
 		      Though it doesn't hurt much i guess.
 	*/
-	
+
 	core::list< MapBlock * >::Iterator i = a_blocks.begin();
 	for(; i != a_blocks.end(); i++)
 	{
@@ -636,7 +637,7 @@ void Map::updateLighting(core::list< MapBlock*> & a_blocks,
 		}
 		std::cout<<"X";
 		std::cout.flush();
-		
+
 		//status.setDone(status.getDone()+1);
 	}
 	std::cout<<std::endl;
@@ -663,7 +664,7 @@ void Map::nodeAddedUpdate(v3s16 p, f32 lightwas)
 	*/
 
 	bool node_under_sunlight = true;
-	
+
 	v3s16 toppos = p + v3s16(0,1,0);
 
 	/*
@@ -688,27 +689,27 @@ void Map::nodeAddedUpdate(v3s16 p, f32 lightwas)
 	MapBlock *block = blockref;
 	assert(block != NULL);
 	modified_blocks.insert(blockpos, block);
-	
+
 	// Unlight neighbours of node.
 	// This means setting light of all consequent dimmer nodes
 	// to 0.
-	
+
 	if(isValidPosition(p) == false)
 		throw;
-		
+
 	unLightNeighbors(p, lightwas, light_sources, modified_blocks);
 
 	MapNode n = getNode(p);
 	n.light = 0;
 	setNode(p, n);
-	
+
 	if(node_under_sunlight)
 	{
 		s16 y = p.Y - 1;
 		for(;; y--){
 			std::cout<<"y="<<y<<std::endl;
 			v3s16 n2pos(p.X, y, p.Z);
-			
+
 			MapNode n2;
 			try{
 				n2 = getNode(n2pos);
@@ -728,7 +729,7 @@ void Map::nodeAddedUpdate(v3s16 p, f32 lightwas)
 				break;
 		}
 	}
-	
+
 	core::list<v3s16>::Iterator j = light_sources.begin();
 	for(; j != light_sources.end(); j++)
 	{
@@ -747,13 +748,13 @@ void Map::nodeAddedUpdate(v3s16 p, f32 lightwas)
 void Map::removeNodeAndUpdate(v3s16 p)
 {
 	std::cout<<"Map::removeNodeAndUpdate()"<<std::endl;
-	
+
 	core::map<v3s16, MapBlock*> modified_blocks;
 
 	bool node_under_sunlight = true;
-	
+
 	v3s16 toppos = p + v3s16(0,1,0);
-	
+
 	/*
 		If there is a node at top and it doesn't have sunlight,
 		there will be no sunlight going down.
@@ -781,7 +782,7 @@ void Map::removeNodeAndUpdate(v3s16 p)
 	MapNode n;
 	n.d = MATERIAL_AIR;
 	setNode(p, n);
-	
+
 	/*
 		Recalculate lighting
 	*/
@@ -850,7 +851,7 @@ core::aabbox3d<s16> Map::getDisplayedBlockArea()
 	camera_mutex.Lock();
 	core::aabbox3d<s16> box_nodes(floatToInt(camera_position));
 	camera_mutex.Unlock();
-	
+
 	g_viewing_range_nodes_mutex.Lock();
 	s16 d = g_viewing_range_nodes;
 	g_viewing_range_nodes_mutex.Unlock();
@@ -866,7 +867,7 @@ void Map::renderMap(video::IVideoDriver* driver,
 	video::SMaterial *materials)
 {
 	//std::cout<<"Rendering map..."<<std::endl;
-	
+
 	/*
 		Collect all blocks that are in the view range
 
@@ -923,16 +924,16 @@ void Map::renderMap(video::IVideoDriver* driver,
 
 	if(blocks_displayed.getSize() == 0)
 		return;
-	
+
 	/*
 		Draw all displayed faces
 	*/
 
 	u32 facecount = 0;
-	
+
 	for(bi = blocks_displayed.begin(); bi != blocks_displayed.end(); bi++){
 		MapBlock *block = *bi;
-		
+
 		/*
 			Compare block position to camera position, skip
 			if not seen on display
@@ -958,10 +959,10 @@ void Map::renderMap(video::IVideoDriver* driver,
 
 		// Total distance
 		f32 d = blockpos_relative.getLength();
-		
+
 		// Maximum radius of a block
 		f32 block_max_radius = 0.5*1.44*1.44*MAP_BLOCKSIZE*BS;
-		
+
 		// If block is (nearly) touching the camera, don't
 		// bother checking further
 		if(d > block_max_radius * 1.5)
@@ -969,7 +970,7 @@ void Map::renderMap(video::IVideoDriver* driver,
 			// Cosine of the angle between the camera direction
 			// and the block direction (camera_direction is an unit vector)
 			f32 cosangle = dforward / d;
-			
+
 			// Compensate for the size of the block
 			// (as the block has to be shown even if it's a bit off FOV)
 			// This is an estimate.
@@ -980,7 +981,7 @@ void Map::renderMap(video::IVideoDriver* driver,
 				continue;
 		}
 #endif
-		
+
 		/*
 			Draw the faces of the block
 		*/
@@ -993,14 +994,14 @@ void Map::renderMap(video::IVideoDriver* driver,
 		for(; i != block->fastfaces->end(); i++)
 		{
 			FastFace *f = *i;
-			
+
 			if(f->material != material_in_use){
 				driver->setMaterial(materials[f->material]);
 				material_in_use = f->material;
 			}
 
 			u16 indices[] = {0,1,2,3};
-			
+
 			driver->drawVertexPrimitiveList(f->vertices, 4, indices, 1,
 					video::EVT_STANDARD, scene::EPT_QUADS, video::EIT_16BIT);
 
@@ -1009,15 +1010,15 @@ void Map::renderMap(video::IVideoDriver* driver,
 
 		block->fastfaces_mutex.Unlock();
 	}
-	
+
 	static s32 oldfacecount = 0;
 	// Cast needed for msvc
 	if(abs((long)(facecount - oldfacecount)) > 333){
 		std::cout<<"Rendered "<<facecount<<" faces"<<std::endl;
 		oldfacecount = facecount;
 	}
-	
-	
+
+
 	//std::cout<<"done"<<std::endl;
 }
 
@@ -1027,14 +1028,14 @@ void Map::renderMap(video::IVideoDriver* driver,
 bool Map::updateChangedVisibleArea()
 {
 	//status.setDone(false);
-	
+
 	/*
 		TODO: Update closest ones first
 
 		Update the lighting and the faces of changed blocks that are
 		to be displayed.
 	*/
-	
+
 	core::aabbox3d<s16> box_blocks = getDisplayedBlockArea();
 	core::list< MapBlock * > blocks_changed;
 	core::list< MapBlock * >::Iterator bi;
@@ -1101,7 +1102,7 @@ bool Map::updateChangedVisibleArea()
 	{
 		MapBlock *block = i.getNode()->getValue();
 		block->updateFastFaces();
-		
+
 		std::cout<<"X";
 		std::cout.flush();
 
@@ -1137,14 +1138,14 @@ MapSector * MasterMap::getSector(v2s16 p2d)
 		m_heightmap.getGroundHeight(p2d+v2s16(1,1)),
 		m_heightmap.getGroundHeight(p2d+v2s16(0,1)),
 	};
-	
+
 	HeightmapBlockGenerator *gen;
 	gen = new HeightmapBlockGenerator(p2d, &m_hwrapper);
 	/*DummyHeightmap dummyheightmap;
 	gen = new HeightmapBlockGenerator(p2d, &dummyheightmap);*/
 	gen->m_heightmap->generateContinued(2.0, 0.2, corners);
 	//sector->getHeightmap()->generateContinued(0.0, 0.0, corners);
-	
+
 	MapSector *sector = new MapSector(this, p2d, gen);
 
 	sector->setHeightmap(gen->m_heightmap);
@@ -1153,7 +1154,7 @@ MapSector * MasterMap::getSector(v2s16 p2d)
 
 	/*std::cout<<"Map::getSector(("<<p2d.X<<","<<p2d.Y
 			<<")): generated. Now returning."<<std::endl;*/
-	
+
 	return sector;
 }
 
@@ -1195,7 +1196,7 @@ MapSector * ClientMap::getSector(v2s16 p2d)
 	*/
 	ClientBlockGenerator *gen;
 	gen = new ClientBlockGenerator(m_client);
-	
+
 	MapSector *sector = new MapSector(this, p2d, gen);
 
 	m_sectors.insert(p2d, sector);

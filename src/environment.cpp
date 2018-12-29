@@ -57,7 +57,7 @@ removed:
 		if(speed > maximum_player_speed)
 			maximum_player_speed = speed;
 	}
-	
+
 	// Maximum time increment (for collision detection etc)
 	// Allow 0.1 blocks per increment
 	// time = distance / speed
@@ -80,7 +80,7 @@ removed:
 		else
 			dtime_part = dtime;
 		dtime -= dtime_part;
-		
+
 		/*
 			Move players
 		*/

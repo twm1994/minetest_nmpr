@@ -36,34 +36,19 @@ Player::Player(
 
 	//if(is_local == false)
 	//{
-	//	// attach billboard to the light
-	//	m_bill = mgr->addBillboardSceneNode(this, core::dimension2d<f32>(60, 60));
-
-	//	// ISceneNode stores a member called SceneManager
-	//	video::IVideoDriver* driver = SceneManager->getVideoDriver();
-	//
-	//	m_bill->setMaterialFlag(video::EMF_LIGHTING, false);
-	//	//m_bill->setMaterialFlag(video::EMF_ZWRITE_ENABLE, false);
-	//	//m_bill->setMaterialType(video::EMT_TRANSPARENT_ADD_COLOR);
-	//	m_bill->setMaterialTexture(0, driver->getTexture("../data/tf.jpg"));
-	//	m_bill->setSize(core::dimension2d<f32>(BS,BS));
-
-	//	m_bill->setPosition(v3f(0, BS+BS/3, 0));
-
-	//	updateSceneNodePosition();
-	//}
-
-	//m_bill = mgr->addBillboardSceneNode(this, core::dimension2d<f32>(60, 60));
 	video::IVideoDriver* driver = SceneManager->getVideoDriver();
-	material.setTexture(0,
-		driver->getTexture("../data/sydney.bmp"));
-	avatar = mgr->getMesh("../data/sydney.md2");
+	avatar = mgr->getMesh("../data/character.b3d");
 	avatar_node = mgr->addAnimatedMeshSceneNode(avatar,this);
-	avatar_node->setScale(v3f(.1, .1, .1));
-	avatar_node->setPosition(v3f(0, BS + BS / 3, 0));
-	avatar_node->setRotation(v3f(0, 270, 0));
-	avatar_node->getMaterial(0) = material;
-
+	if (avatar_node) {
+		avatar_node->setMaterialFlag(video::EMF_LIGHTING, false);
+		avatar_node->setMaterialTexture(0,driver->getTexture("../data/character.png"));
+		avatar_node->setFrameLoop(168,188);
+		avatar_node->setAnimationSpeed(32);
+		// this->animateStand();
+		avatar_node->setScale(v3f(.3, .3, .3));
+		avatar_node->setPosition(v3f(0, (BS + BS) / 3, 0));
+		avatar_node->setRotation(v3f(0, 0, 0));
+	}
 	updateSceneNodePosition();
 }
 
@@ -73,8 +58,19 @@ Player::~Player()
 		ISceneNode::remove();
 }
 
+// void Player::stand()
+// {
+// 	avatar_node->setFrameLoop(0,80);
+// }
+
+// void Player::sit()
+// {
+// 	avatar_node->setFrameLoop(81,161);
+// }
+
 void Player::move(f32 dtime, Map &map)
 {
+	// this->avatar_node->setFrameLoop(168,188);
 	v3f position = getPosition();
 	v3f oldpos = position;
 	v3s16 oldpos_i = Map::floatToInt(oldpos);
@@ -205,5 +201,7 @@ void Player::move(f32 dtime, Map &map)
 	} // for y
 
 	setPosition(position);
+	// avatar_node->setFrameLoop(168,188);
+	// this->avatar_node->setFrameLoop(0,80);
 }
 

@@ -55,7 +55,7 @@ Actions:
 #define FIELD_OF_VIEW_TEST 1
 
 // Enable unit tests
-#define ENABLE_TESTS 0
+#define ENABLE_TESTS 1
 
 #ifdef _MSC_VER
 #pragma comment(lib, "Irrlicht.lib")
@@ -280,7 +280,7 @@ void SpeedTests(IrrlichtDevice *device)
 		std::cout<<"Done. "<<fp_conversion_time<<"ms"<<std::endl;
 		//assert(fp_conversion_time < 1000);
 	}
-	
+
 	{
 		std::cout<<"Testing floating-point vector speed"<<std::endl;
 		u32 time1 = device->getTimer()->getRealTime();
@@ -300,7 +300,7 @@ void SpeedTests(IrrlichtDevice *device)
 	{
 		std::cout<<"Testing core::map speed"<<std::endl;
 		u32 time1 = device->getTimer()->getRealTime();
-		
+
 		core::map<v2s16, f32> map1;
 		tempf = -324;
 		for(s16 y=0; y<500; y++){
@@ -324,7 +324,7 @@ void SpeedTests(IrrlichtDevice *device)
 		std::cout<<"Testing mutex speed"<<std::endl;
 		u32 time1 = device->getTimer()->getRealTime();
 		u32 time2 = time1;
-		
+
 		JMutex m;
 		m.Init();
 		u32 n = 0;
@@ -359,9 +359,9 @@ int main()
 	*/
 	if(ENABLE_TESTS)
 		run_tests();
-	
+
 	//return 0; //DEBUG
-		
+
 	/*
 		Initialization
 	*/
@@ -379,26 +379,31 @@ int main()
 		Host selection
 	*/
 	char connect_name[100];
-	std::cout<<std::endl<<std::endl;
-	std::cout<<"Address to connect to [empty = host a game]: ";
-	std::cin.getline(connect_name, 100);
-	
-	bool hosting = false;
-	if(connect_name[0] == 0){
-		snprintf(connect_name, 100, "127.0.0.1");
-		hosting = true;
-	}
-	std::cout<<"-> "<<connect_name<<std::endl;
-	
-	std::cout<<"Port [empty=30000]: ";
-	char templine[100];
-	std::cin.getline(templine, 100);
-	unsigned short port;
-	if(templine[0] == 0)
-		port = 30000;
-	else
-		port = atoi(templine);
+	// std::cout<<std::endl<<std::endl;
+	// std::cout<<"Address to connect to [empty = host a game]: ";
+	// std::cin.getline(connect_name, 100);
 
+	bool hosting = false;
+	// if(connect_name[0] == 0){
+	// 	snprintf(connect_name, 100, "127.0.0.1");
+	// 	hosting = true;
+	// }
+	// std::cout<<"-> "<<connect_name<<std::endl;
+
+	// std::cout<<"Port [empty=30000]: ";
+	// char templine[100];
+	// std::cin.getline(templine, 100);
+	unsigned short port;
+	// if(templine[0] == 0)
+	// 	port = 30000;
+	// else
+	// 	port = atoi(templine);
+
+	std::cout<<"Address to connect to [empty = host a game]: ";
+	snprintf(connect_name, 100, "127.0.0.1");
+	std::cout<<"-> "<<connect_name<<std::endl;
+	port = 30000;
+	hosting = true;
 	/*
 		Resolution selection
 	*/
@@ -415,7 +420,7 @@ int main()
 	};
 
 	u16 res_count = sizeof(resolutions)/sizeof(resolutions[0]);
-	
+
 	std::cout<<"Select window resolution "
 			<<"(type a number and press enter):"<<std::endl;
 	for(u16 i=0; i<res_count; i++)
@@ -449,7 +454,7 @@ int main()
 
 	if (device == 0)
 		return 1; // could not create selected driver.
-	
+
 	/*
 		Run some speed tests
 	*/
@@ -477,7 +482,7 @@ int main()
 	//skin->setColor(gui::EGDC_3D_SHADOW, video::SColor(0,0,0,0));
 	skin->setColor(gui::EGDC_3D_HIGH_LIGHT, video::SColor(255,0,0,0));
 	skin->setColor(gui::EGDC_3D_SHADOW, video::SColor(255,0,0,0));
-	
+
 	const wchar_t *text = L"Loading...";
 	core::vector2d<s32> center(screenW/2, screenH/2);
 	core::dimension2d<u32> textd = font->getDimension(text);
@@ -521,7 +526,7 @@ int main()
 	{
 
 	std::cout<<"Creating server and client"<<std::endl;
-	
+
 	Server *server = NULL;
 	if(hosting){
 		server = new Server();
@@ -546,38 +551,53 @@ int main()
 		Create the camera node
 	*/
 
+	//scene::ICameraSceneNode* camera = smgr->addCameraSceneNode(
+	//	0, // Camera parent
+	//	v3f(BS*100, BS*2, BS*100), // Look from
+	//	v3f(BS*100+1, BS*2, BS*100), // Look to
+	//	-1 // Camera ID
+ //  	);
 	scene::ICameraSceneNode* camera = smgr->addCameraSceneNode(
 		0, // Camera parent
-		v3f(BS*100, BS*2, BS*100), // Look from
-		v3f(BS*100+1, BS*2, BS*100), // Look to
-		-1 // Camera ID
-   	);
-
+		v3f(0, 0, 0), // Look from
+		v3f(0, 0, 1), // Look to
+		-1 // Camera IDwhat 
+	);
 	if(camera == NULL)
 		return 1;
-	
+
 	camera->setFOV(FOV_ANGLE);
 	// Just so big a value that everything rendered is visible
 	camera->setFarValue(BS*1000);
-	
+
+#define ZOOM_MAX 0
+#define ZOOM_MIN (-2.0*BS)
+#define ZOOM_SPEED (0.8*BS)
+
 	f32 camera_yaw = 0; // "right/left"
 	f32 camera_pitch = 0; // "up/down"
 	
+	f32 zoom_max = ZOOM_MAX;
+	f32 zoom_min = ZOOM_MIN;
+	f32 zoom_speed = ZOOM_SPEED;
+	v3f camera_zoom = v3f(0,0,ZOOM_MAX);
+
 	// Random constants
 #define WALK_ACCELERATION (4.0 * BS)
 #define WALKSPEED_MAX (4.0 * BS)
+
 //#define WALKSPEED_MAX (20.0 * BS)
 	f32 walk_acceleration = WALK_ACCELERATION;
 	f32 walkspeed_max = WALKSPEED_MAX;
-	
+
 	/*
 		The mouse cursor needs not be visible, so we hide it via the
 		irr::IrrlichtDevice::ICursorControl.
 	*/
 	device->getCursorControl()->setVisible(false);
-	
+
 	gui_loadingtext->remove();
-	
+
 	gui::IGUIStaticText *guitext = guienv->addStaticText(
 			L"Minetest-c55", core::rect<s32>(5, 5, 5+300, 5+textsize.Y),
 			false, false);
@@ -586,12 +606,12 @@ int main()
 	*/
 
 	bool first_loop_after_window_activation = true;
-	
+
 	s32 lastFPS = -1;
-	
+
 	// Time is in milliseconds
 	u32 lasttime = device->getTimer()->getTime();
-	
+
 	while(device->run())
 	{
 		/*
@@ -604,12 +624,12 @@ int main()
 		else
 			dtime = 0;
 		lasttime = time;
-		
+
 		updateViewingRange(dtime);
 
 		// Collected during the loop and displayed
 		core::list< core::aabbox3d<f32> > hilightboxes;
-		
+
 		/*
 			Special keys
 		*/
@@ -618,29 +638,52 @@ int main()
 			break;
 		}
 
+		/*Camera control*/
+		if (receiver.IsKeyDown(irr::KEY_UP))
+		{
+			camera_zoom += v3f(0, 0, zoom_speed*dtime);
+		}
+
+		if (receiver.IsKeyDown(irr::KEY_DOWN))
+		{
+			camera_zoom -= v3f(0, 0, zoom_speed*dtime);
+		}
+		if (camera_zoom.Z < zoom_min)
+		{
+			camera_zoom = v3f(0, 0, zoom_min);
+		}
+		else if (camera_zoom.Z> zoom_max)
+		{
+			camera_zoom = v3f(0, 0, zoom_max);
+		}
 		/*
 			Player speed control
 		*/
 
 		v3f move_direction = v3f(0,0,1);
 		move_direction.rotateXZBy(camera_yaw);
-		
+
 		v3f speed = v3f(0,0,0);
+		// player->animateStand();
 		if(receiver.IsKeyDown(irr::KEY_KEY_W))
 		{
 			speed += move_direction;
+			// player->animateMove();
 		}
 		if(receiver.IsKeyDown(irr::KEY_KEY_S))
 		{
 			speed -= move_direction;
+			// player->animateMove();
 		}
 		if(receiver.IsKeyDown(irr::KEY_KEY_A))
 		{
 			speed += move_direction.crossProduct(v3f(0,1,0));
+			// player->animateMove();
 		}
 		if(receiver.IsKeyDown(irr::KEY_KEY_D))
 		{
 			speed += move_direction.crossProduct(v3f(0,-1,0));
+			// player->animateMove();
 		}
 		if(receiver.IsKeyDown(irr::KEY_SPACE))
 		{
@@ -648,14 +691,15 @@ int main()
 				//player_speed.Y = 30*BS;
 				//player.speed.Y = 5*BS;
 				player->speed.Y = 6.5*BS;
+				// player->animateMove();
 			}
 		}
 
 		// The speed of the player (Y is ignored)
 		speed = speed.normalize() * walkspeed_max;
-		
+
 		f32 inc = walk_acceleration * BS * dtime;
-		
+
 		if(player->speed.X < speed.X - inc)
 			player->speed.X += inc;
 		else if(player->speed.X > speed.X + inc)
@@ -673,11 +717,11 @@ int main()
 			player->speed.Z = speed.Z;
 		else if(player->speed.Z > speed.Z)
 			player->speed.Z = speed.Z;
-		
+
 		/*
 			Process environment
 		*/
-		
+
 		{
 			//TimeTaker("client.step(dtime)", device);
 			client.step(dtime);
@@ -687,11 +731,11 @@ int main()
 			//TimeTaker("server->step(dtime)", device);
 			server->step(dtime);
 		}
-		
+
 		/*
 			Mouse and camera control
 		*/
-		
+
 		if(device->isWindowActive())
 		{
 			if(first_loop_after_window_activation){
@@ -710,16 +754,32 @@ int main()
 		else{
 			first_loop_after_window_activation = true;
 		}
-		
+
 		v3f camera_direction = v3f(0,0,1);
 		camera_direction.rotateYZBy(camera_pitch);
 		camera_direction.rotateXZBy(camera_yaw);
 
-		v3f camera_position =
-				player->getPosition() + v3f(0, BS+BS/2, 0);
+		// v3f camera_position =
+		// 		player->getPosition() + v3f(0, BS+BS/2, -10);
 
-		camera->setPosition(camera_position);
-		camera->setTarget(camera_position + camera_direction);
+		v3f camera_position =
+				player->getPosition() + v3f(0, BS, 0) + camera_zoom;
+
+		//camera->setPosition(camera_position);
+		//camera->setTarget(camera_position + camera_direction);
+		if (camera_zoom.Z==zoom_max)
+		{
+			camera->setPosition(camera_position);
+			camera->setTarget(camera_position + camera_direction);
+			camera->bindTargetAndRotation(true);
+		}
+		else
+		{
+			camera->setPosition(camera_position + v3f(0, BS, 0));
+			camera->setTarget(player->getPosition());
+			camera->bindTargetAndRotation(true);
+		}
+		
 
 		if(FIELD_OF_VIEW_TEST){
 			//client.m_env.getMap().updateCamera(v3f(0,0,0), v3f(0,0,1));
@@ -729,23 +789,23 @@ int main()
 			//client.m_env.getMap().updateCamera(camera_position, camera_direction);
 			client.updateCamera(camera_position, camera_direction);
 		}
-		
+
 		/*
 			Calculate what block is the crosshair pointing to
 		*/
-		
+
 		//u32 t1 = device->getTimer()->getTime();
-		
+
 		f32 d = 4; // max. distance
 		core::line3d<f32> shootline(camera_position,
 				camera_position + camera_direction * BS * (d+1));
-		
+
 		bool nodefound = false;
 		v3s16 nodepos;
 		v3s16 neighbourpos;
 		core::aabbox3d<f32> nodefacebox;
 		f32 mindistance = BS * 1001;
-		
+
 		v3s16 pos_i = Map::floatToInt(player->getPosition());
 
 		s16 a = d;
@@ -755,7 +815,7 @@ int main()
 		s16 yend = pos_i.Y + 1 + (camera_direction.Y>0 ? a : 1);
 		s16 zend = pos_i.Z + (camera_direction.Z>0 ? a : 1);
 		s16 xend = pos_i.X + (camera_direction.X>0 ? a : 1);
-		
+
 		for(s16 y = ystart; y <= yend; y++){
 		for(s16 z = zstart; z <= zend; z++){
 		for(s16 x = xstart; x <= xend; x++)
@@ -771,9 +831,9 @@ int main()
 
 			v3s16 np(x,y,z);
 			v3f npf = Map::intToFloat(np);
-			
+
 			f32 d = 0.01;
-			
+
 			v3s16 directions[6] = {
 				v3s16(0,0,1), // back
 				v3s16(0,1,0), // top
@@ -790,7 +850,7 @@ int main()
 				v3f centerpoint = npf + dir_f * BS/2;
 				f32 distance =
 						(centerpoint - camera_position).getLength();
-				
+
 				if(distance < mindistance){
 					//std::cout<<"for centerpoint=("<<centerpoint.X<<","<<centerpoint.Y<<","<<centerpoint.Z<<"): distance < mindistance"<<std::endl;
 					//std::cout<<"npf=("<<npf.X<<","<<npf.Y<<","<<npf.Z<<")"<<std::endl;
@@ -802,7 +862,7 @@ int main()
 						v3f(BS/2, BS/2, BS/2),
 						v3f(-BS/2, -BS/2, BS/2+d)
 					};
-					
+
 					for(u16 j=0; j<2; j++){
 						m.rotateVect(corners[j]);
 						corners[j] += npf;
@@ -842,7 +902,7 @@ int main()
 			}
 
 			hilightboxes.push_back(nodefacebox);
-			
+
 			if(receiver.leftclicked){
 				std::cout<<"Removing block (MapNode)"<<std::endl;
 				u32 time1 = device->getTimer()->getRealTime();
@@ -866,7 +926,7 @@ int main()
 				MapNode n;
 				n.d = g_selected_material;
 				client.addNode(neighbourpos, n);
-				
+
 				u32 time2 = device->getTimer()->getRealTime();
 				u32 dtime = time2 - time1;
 				std::cout<<"Took "<<dtime<<"ms"<<std::endl;
@@ -883,7 +943,7 @@ int main()
 		/*
 			Update gui stuff
 		*/
-		
+
 		static u8 old_selected_material = MATERIAL_AIR;
 		if(g_selected_material != old_selected_material)
 		{
@@ -893,7 +953,7 @@ int main()
 					g_selected_material);
 			guitext->setText(temptext);
 		}
-		
+
 		/*
 			Drawing begins
 		*/
@@ -924,7 +984,7 @@ int main()
 		driver->draw2DLine(displaycenter - core::vector2d<s32>(0,10),
 				displaycenter + core::vector2d<s32>(0,10),
 				video::SColor(255,255,255,255));
-		
+
 		video::SMaterial m;
 		m.Thickness = 10;
 		m.Lighting = false;
@@ -971,7 +1031,7 @@ int main()
 	In the end, delete the Irrlicht device.
 	*/
 	device->drop();
-	
+
 	return 0;
 }
 
