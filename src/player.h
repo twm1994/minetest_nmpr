@@ -30,19 +30,19 @@ public:
 
 	~Player();
 
-	void animateStand()
-	{
-		// avatar_node->setFrameLoop(0,80);
-		avatar_node->setFrameLoop(168,188);
-		avatar_node->setAnimationSpeed(32);
-	}
+	//void animateStand()
+	//{
+	//	// avatar_node->setFrameLoop(0,80);
+	//	avatar_node->setFrameLoop(168,188);
+	//	avatar_node->setAnimationSpeed(32);
+	//}
 
-	void animateMove()
-	{
-		// avatar_node->setFrameLoop(168,188);
-		avatar_node->setFrameLoop(0,80);
-		avatar_node->setAnimationSpeed(32);
-	}
+	//void animateMove()
+	//{
+	//	// avatar_node->setFrameLoop(168,188);
+	//	avatar_node->setFrameLoop(0,80);
+	//	avatar_node->setAnimationSpeed(32);
+	//}
 
 	void move(f32 dtime, Map &map);
 
@@ -79,26 +79,26 @@ public:
 		updateSceneNodePosition();
 	}
 
-	v3f getRotation()
-	{
-		return m_rotation;
-	}
+	//v3f getRotation()
+	//{
+	//	return m_rotation;
+	//}
 
-	void setRotation(v3f rotation)
-	{
-		m_rotation = rotation;
-		updateSceneNodeRotation();
-	}
+	//void setRotation(v3f rotation)
+	//{
+	//	m_rotation = rotation;
+	//	updateSceneNodeRotation();
+	//}
 
 	void updateSceneNodePosition()
 	{
 		ISceneNode::setPosition(m_position);
 	}
 
-	void updateSceneNodeRotation() 
-	{
-		ISceneNode::setRotation(m_rotation);
-	}
+	//void updateSceneNodeRotation() 
+	//{
+	//	ISceneNode::setRotation(m_rotation);
+	//}
 
 	bool isLocal()
 	{
@@ -115,7 +115,7 @@ private:
 	v3f m_position;
 	v3f m_rotation;
 	//scene::ISceneNode* m_bill;
-	scene::IBillboardSceneNode* m_bill;
+	//scene::IBillboardSceneNode* m_bill;
 	scene::IAnimatedMesh*           avatar;
 	scene::IAnimatedMeshSceneNode*  avatar_node;
 	video::SMaterial                material;

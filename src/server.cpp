@@ -89,6 +89,7 @@ void Server::step(float dtime)
 
 void Server::AsyncRunStep()
 {
+	//std::cout << "----------Server::AsyncRunStep()----------" << std::endl;
 	float dtime;
 	{
 		JMutexAutoLock lock1(m_step_dtime_mutex);
@@ -152,8 +153,9 @@ void Server::ProcessData(u8 *data, u32 datasize, u16 peer_id)
 		// Check for too short data
 		if(datasize < 8)
 			return;
-		dout_server<<"Server::ProcessData(): GETBLOCK"
-				<<std::endl;
+		//dout_server<<"Server::ProcessData(): GETBLOCK"
+		//		<<std::endl;
+
 		/*
 			Get block data and send it
 		*/
@@ -162,7 +164,7 @@ void Server::ProcessData(u8 *data, u32 datasize, u16 peer_id)
 		p.Y = readS16(&data[4]);
 		p.Z = readS16(&data[6]);
 		MapBlock *block = m_env.getMap().getBlock(p);
-	
+		dout_server << "Server::ProcessData(): GETBLOCK at ("<< p.X << "," << p.Y << "," << p.Z << ")"<< std::endl;
 		u32 replysize = 8 + MapBlock::serializedLength();
 		SharedBuffer<u8> reply(replysize);
 		writeU16(&reply[0], TOCLIENT_BLOCKDATA);

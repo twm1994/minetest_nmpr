@@ -55,7 +55,7 @@ Actions:
 #define FIELD_OF_VIEW_TEST 1
 
 // Enable unit tests
-#define ENABLE_TESTS 1
+#define ENABLE_TESTS 0
 
 #ifdef _MSC_VER
 #pragma comment(lib, "Irrlicht.lib")
@@ -114,20 +114,31 @@ u16 g_selected_material = 0;
 	- use these to disable or enable outputs of parts of the program
 */
 
-std::ofstream dfile("debug.txt");
+//std::ofstream dfile("debug.txt");
 //std::ofstream dfile2("debug2.txt");
+std::ofstream dfile_con("debug_con.txt");
+std::ofstream dfile_server("debug_server.txt");
+std::ofstream dfile_client("debug_client.txt");
+std::ofstream dfile_dummy("debug_dummy.txt");
+std::ofstream dfile_map_gen("map_gen.txt");
+
+std::ostream dout_dummy(dfile_dummy.rdbuf());
+std::ostream dout_map_gen(dfile_map_gen.rdbuf());
 
 // Connection
 //std::ostream dout_con(std::cout.rdbuf());
-std::ostream dout_con(dfile.rdbuf());
+//std::ostream dout_con(dfile.rdbuf());
+std::ostream dout_con(dfile_con.rdbuf());
 
 // Server
 //std::ostream dout_server(std::cout.rdbuf());
-std::ostream dout_server(dfile.rdbuf());
+//std::ostream dout_server(dfile.rdbuf());
+std::ostream dout_server(dfile_server.rdbuf());
 
 // Client
 //std::ostream dout_client(std::cout.rdbuf());
-std::ostream dout_client(dfile.rdbuf());
+//std::ostream dout_client(dfile.rdbuf());
+std::ostream dout_client(dfile_client.rdbuf());
 
 /*
 	TimeTaker
@@ -496,7 +507,7 @@ int main()
 			text, textrect, false, false);
 	gui_loadingtext->setTextAlignment(gui::EGUIA_CENTER, gui::EGUIA_UPPERLEFT);
 
-	driver->beginScene(true, true, video::SColor(255,0,0,0));
+	driver->beginScene(true, true, video::SColor(255, 255, 255, 255));
 	guienv->drawAll();
 	driver->endScene();
 
@@ -547,6 +558,7 @@ int main()
 
 	Player *player = client.getLocalPlayer();
 
+
 	/*
 		Create the camera node
 	*/
@@ -561,7 +573,7 @@ int main()
 		0, // Camera parent
 		v3f(0, 0, 0), // Look from
 		v3f(0, 0, 1), // Look to
-		-1 // Camera IDwhat 
+		-1 // Camera ID
 	);
 	if(camera == NULL)
 		return 1;
@@ -746,8 +758,8 @@ int main()
 				s32 dy = device->getCursorControl()->getPosition().Y - 240;
 				camera_yaw -= dx*0.2;
 				camera_pitch += dy*0.2;
-				if(camera_pitch < -89.9) camera_pitch = -89.9;
-				if(camera_pitch > 89.9) camera_pitch = 89.9;
+				if(camera_pitch < -89.9) camera_pitch = -89.9; // look up
+				if(camera_pitch > 89.9) camera_pitch = 89.9; // look down
 			}
 			device->getCursorControl()->setPosition(320, 240);
 		}
@@ -761,7 +773,8 @@ int main()
 
 		// v3f camera_position =
 		// 		player->getPosition() + v3f(0, BS+BS/2, -10);
-
+		v3f p = player->getPosition();
+		dout_dummy << "Local player location at time "<<time<<": ("<< p.X << "," << p.Y << "," << p.Z << ")"<< std::endl;
 		v3f camera_position =
 				player->getPosition() + v3f(0, BS, 0) + camera_zoom;
 

@@ -11,6 +11,9 @@
 
 #include "common_irrlicht.h"
 #include "exceptions.h"
+#include "main.h"
+using std::fixed;
+using std::ios;
 
 #define GROUNDHEIGHT_NOTFOUND_SETVALUE (-10e6)
 #define GROUNDHEIGHT_VALID_MINVALUE    ( -9e6)
@@ -21,13 +24,13 @@ extern bool g_heightmap_debugprint;
 class Heightmappish
 {
 public:
-	virtual f32 getGroundHeight(v2s16 p, bool generate=true)
+	virtual f32 getGroundHeight(v2s16 p, bool generate = true)
 	{
 		printf("Heightmappish::getGroundHeight() stub called\n");
 		assert(0);
 		return 0.0;
 	}
-	virtual void setGroundHeight(v2s16 p, f32 y, bool generate=true)
+	virtual void setGroundHeight(v2s16 p, f32 y, bool generate = true)
 	{
 		printf("Heightmappish::setGroundHeight() stub called\n");
 		assert(0);
@@ -47,15 +50,15 @@ public:
 		};
 
 		v2f32 slopevector(0.0, 0.0);
-		
-		for(u16 i=0; i<2; i++){
+
+		for (u16 i = 0; i < 2; i++) {
 			f32 y1 = 0.0;
 			f32 y2 = 0.0;
 			f32 count = 0.0;
 
 			v2s16 p1 = p - dirs[i];
 			y1 = getGroundHeight(p1, false);
-			if(y1 > GROUNDHEIGHT_VALID_MINVALUE){
+			if (y1 > GROUNDHEIGHT_VALID_MINVALUE) {
 				y1 -= y0;
 				count += 1.0;
 			}
@@ -64,20 +67,20 @@ public:
 
 			v2s16 p2 = p + dirs[i];
 			y2 = getGroundHeight(p2, false);
-			if(y2 > GROUNDHEIGHT_VALID_MINVALUE){
+			if (y2 > GROUNDHEIGHT_VALID_MINVALUE) {
 				y2 -= y0;
 				count += 1.0;
 			}
 			else
 				y2 = 0;
 
-			if(count < 0.001)
+			if (count < 0.001)
 				return v2f32(0.0, 0.0);
-			
+
 			/*
 				If y2 is higher than y1, slope is positive
 			*/
-			f32 slope = (y2 - y1)/count;
+			f32 slope = (y2 - y1) / count;
 
 			slopevector += fdirs[i] * slope;
 		}
@@ -96,18 +99,18 @@ class WrapperHeightmap : public Heightmap
 	Heightmappish *m_target;
 public:
 
-	WrapperHeightmap(Heightmappish *target):
+	WrapperHeightmap(Heightmappish *target) :
 		m_target(target)
 	{
-		if(target == NULL)
+		if (target == NULL)
 			throw NullPointerException();
 	}
 
-	f32 getGroundHeight(v2s16 p, bool generate=true)
+	f32 getGroundHeight(v2s16 p, bool generate = true)
 	{
 		return m_target->getGroundHeight(p, generate);
 	}
-	void setGroundHeight(v2s16 p, f32 y, bool generate=true)
+	void setGroundHeight(v2s16 p, f32 y, bool generate = true)
 	{
 		m_target->setGroundHeight(p, y, generate);
 	}
@@ -118,18 +121,18 @@ class DummyHeightmap : public Heightmap
 public:
 	f32 m_value;
 
-	DummyHeightmap(f32 value=0.0)
+	DummyHeightmap(f32 value = 0.0)
 	{
 		m_value = value;
 	}
-	
-	f32 getGroundHeight(v2s16 p, bool generate=true)
+
+	f32 getGroundHeight(v2s16 p, bool generate = true)
 	{
 		return m_value;
 	}
-	void setGroundHeight(v2s16 p, f32 y, bool generate=true)
+	void setGroundHeight(v2s16 p, f32 y, bool generate = true)
 	{
-		std::cout<<"DummyHeightmap::getGroundHeight()"<<std::endl;
+		std::cout << "DummyHeightmap::getGroundHeight()" << std::endl;
 	}
 };
 
@@ -149,24 +152,24 @@ class FixedHeightmap : public Heightmap
 public:
 
 	FixedHeightmap(Heightmap * master,
-			v2s16 pos_on_master, s32 blocksize):
+		v2s16 pos_on_master, s32 blocksize) :
 		m_master(master),
 		m_pos_on_master(pos_on_master),
 		m_blocksize(blocksize)
 	{
-		W = m_blocksize+1;
-		H = m_blocksize+1;
+		W = m_blocksize + 1;
+		H = m_blocksize + 1;
 		m_data = NULL;
-		m_data = new f32[(blocksize+1)*(blocksize+1)];
+		m_data = new f32[(blocksize + 1)*(blocksize + 1)];
 
-		for(s32 i=0; i<(blocksize+1)*(blocksize+1); i++){
+		for (s32 i = 0; i < (blocksize + 1)*(blocksize + 1); i++) {
 			m_data[i] = GROUNDHEIGHT_NOTFOUND_SETVALUE;
 		}
 	}
 
 	~FixedHeightmap()
 	{
-		if(m_data)
+		if (m_data)
 			delete[] m_data;
 	}
 
@@ -185,21 +188,29 @@ public:
 
 	void print()
 	{
-		printf("FixedHeightmap::print(): size is %ix%i\n", W, H);
-		for(s32 y=0; y<H; y++){
-			for(s32 x=0; x<W; x++){
+		//printf("FixedHeightmap::print(): size is %ix%i\n", W, H);
+		dout_map_gen << "FixedHeightmap::print(): size is " << W << "x" << H << std::endl;
+		for (s32 y = 0; y < H; y++) {
+			for (s32 x = 0; x < W; x++) {
 				/*if(getSeeded(v2s16(x,y)))
 					printf("S");*/
-				f32 n = getGroundHeight(v2s16(x,y));
-				if(n < GROUNDHEIGHT_VALID_MINVALUE)
-					printf("  -   ");
-				else
-					printf("% -5.1f ", getGroundHeight(v2s16(x,y)));
+				f32 n = getGroundHeight(v2s16(x, y));
+				if (n < GROUNDHEIGHT_VALID_MINVALUE)
+					dout_map_gen << " - ";
+				//printf("  -   ");
+				else {
+					dout_map_gen << fixed;
+					dout_map_gen << " || " << getGroundHeight(v2s16(x, y)) << " || ";
+					dout_map_gen.unsetf(ios::fixed);
+					//printf("% -5.1f ", getGroundHeight(v2s16(x, y)));
+				}
+
 			}
-			printf("\n");
+			//printf("\n");
+			dout_map_gen << std::endl;
 		}
 	}
-	
+
 	bool overborder(v2s16 p)
 	{
 		return (p.X < 0 || p.X >= W || p.Y < 0 || p.Y >= H);
@@ -207,9 +218,9 @@ public:
 
 	bool atborder(v2s16 p)
 	{
-		if(overborder(p))
+		if (overborder(p))
 			return false;
-		return (p.X == 0 || p.X == W-1 || p.Y == 0 || p.Y == H-1);
+		return (p.X == 0 || p.X == W - 1 || p.Y == 0 || p.Y == H - 1);
 	}
 
 	void setGroundHeight(v2s16 p, f32 y)
@@ -217,12 +228,12 @@ public:
 		/*std::cout<<"FixedHeightmap::setGroundHeight(("
 				<<p.X<<","<<p.Y
 				<<"), "<<y<<")"<<std::endl;*/
-		if(overborder(p))
+		if (overborder(p))
 			throw InvalidPositionException();
 		m_data[p.Y*W + p.X] = y;
 	}
 
-	void setGroundHeightParent(v2s16 p, f32 y, bool generate=false)
+	void setGroundHeightParent(v2s16 p, f32 y, bool generate = false)
 	{
 		/*// Position on master
 		v2s16 blockpos_nodes = m_pos_on_master * m_blocksize;
@@ -233,29 +244,29 @@ public:
 				<<nodepos_master.X<<","
 				<<nodepos_master.Y<<")"<<std::endl;
 		m_master->setGroundHeight(nodepos_master, y, false);*/
-		
-		if(overborder(p) || atborder(p))
+
+		if (overborder(p) || atborder(p))
 		{
-			try{
+			try {
 				// Position on master
 				v2s16 blockpos_nodes = m_pos_on_master * m_blocksize;
 				v2s16 nodepos_master = blockpos_nodes + p;
 				m_master->setGroundHeight(nodepos_master, y, false);
 			}
-			catch(InvalidPositionException &e)
+			catch (InvalidPositionException &e)
 			{
 			}
 		}
-		
-		if(overborder(p))
+
+		if (overborder(p))
 			return;
-		
+
 		setGroundHeight(p, y);
 	}
-	
-	f32 getGroundHeight(v2s16 p, bool generate=false)
+
+	f32 getGroundHeight(v2s16 p, bool generate = false)
 	{
-		if(overborder(p))
+		if (overborder(p))
 			return GROUNDHEIGHT_NOTFOUND_SETVALUE;
 		return m_data[p.Y*W + p.X];
 	}
@@ -265,12 +276,12 @@ public:
 		/*v2s16 blockpos_nodes = m_pos_on_master * m_blocksize;
 		return m_master->getGroundHeight(blockpos_nodes + p, false);*/
 
-		if(overborder(p) == false){
+		if (overborder(p) == false) {
 			f32 h = getGroundHeight(p);
-			if(h > GROUNDHEIGHT_VALID_MINVALUE)
+			if (h > GROUNDHEIGHT_VALID_MINVALUE)
 				return h;
 		}
-		
+
 		// Position on master
 		v2s16 blockpos_nodes = m_pos_on_master * m_blocksize;
 		f32 h = m_master->getGroundHeight(blockpos_nodes + p, false);
@@ -280,7 +291,7 @@ public:
 	f32 avgNeighbours(v2s16 p, s16 d);
 
 	f32 avgDiagNeighbours(v2s16 p, s16 d);
-	
+
 	/*
 		Adds a point to transform into a diamond pattern
 		a = 2, 4, 8, 16, ...
@@ -306,7 +317,7 @@ public:
 	void makeSquares(s16 a, f32 randmax);
 
 	void DiamondSquare(f32 randmax, f32 randfactor);
-	
+
 	/*
 		corners: [i]=XY: [0]=00, [1]=10, [2]=11, [3]=10
 	*/
@@ -321,24 +332,24 @@ public:
 
 	FixedHeightmap m_child;
 
-	OneChildHeightmap(s16 blocksize):
+	OneChildHeightmap(s16 blocksize) :
 		m_blocksize(blocksize),
-		m_child(this, v2s16(0,0), blocksize)
+		m_child(this, v2s16(0, 0), blocksize)
 	{
 	}
-	
-	f32 getGroundHeight(v2s16 p, bool generate=true)
+
+	f32 getGroundHeight(v2s16 p, bool generate = true)
 	{
-		if(p.X < 0 || p.X > m_blocksize 
-				|| p.Y < 0 || p.Y > m_blocksize)
+		if (p.X < 0 || p.X > m_blocksize
+			|| p.Y < 0 || p.Y > m_blocksize)
 			return GROUNDHEIGHT_NOTFOUND_SETVALUE;
 		return m_child.getGroundHeight(p);
 	}
-	void setGroundHeight(v2s16 p, f32 y, bool generate=true)
+	void setGroundHeight(v2s16 p, f32 y, bool generate = true)
 	{
 		//std::cout<<"OneChildHeightmap::setGroundHeight()"<<std::endl;
-		if(p.X < 0 || p.X > m_blocksize 
-				|| p.Y < 0 || p.Y > m_blocksize)
+		if (p.X < 0 || p.X > m_blocksize
+			|| p.Y < 0 || p.Y > m_blocksize)
 			throw InvalidPositionException();
 		m_child.setGroundHeight(p, y);
 	}
@@ -348,11 +359,11 @@ public:
 	TODO
 	This is a dynamic container of an arbitrary number of heightmaps
 	at arbitrary positions.
-	
+
 	It is able to redirect queries to the corresponding heightmaps and
 	it generates new heightmaps on-the-fly according to the relevant
 	parameters.
-	
+
 	It doesn't have a master heightmap because it is meant to be used
 	as such itself.
 
@@ -360,10 +371,10 @@ public:
 	size (m_blocksize+1)*(m_blocksize+1)
 
 	TODO: Dynamic unloading and loading of stuff to/from disk
-	
+
 	This is used as the master heightmap of a Map object.
 */
-class UnlimitedHeightmap: public Heightmap
+class UnlimitedHeightmap : public Heightmap
 {
 private:
 
@@ -377,7 +388,7 @@ private:
 public:
 
 	UnlimitedHeightmap(s16 blocksize, f32 randmax, f32 randfactor,
-			f32 basevalue=0.0):
+		f32 basevalue = 0.0) :
 		m_blocksize(blocksize),
 		m_randmax(randmax),
 		m_randfactor(randfactor),
@@ -389,7 +400,7 @@ public:
 	{
 		core::map<v2s16, FixedHeightmap*>::Iterator i;
 		i = m_heightmaps.getIterator();
-		for(; i.atEnd() == false; i++)
+		for (; i.atEnd() == false; i++)
 		{
 			delete i.getNode()->getValue();
 		}
@@ -400,20 +411,20 @@ public:
 		m_randmax = randmax;
 		m_randfactor = randfactor;
 	}
-	
+
 	void print();
 
 	v2s16 getNodeHeightmapPos(v2s16 p)
 	{
 		return v2s16(
-				(p.X>=0 ? p.X : p.X-m_blocksize+1) / m_blocksize,
-				(p.Y>=0 ? p.Y : p.Y-m_blocksize+1) / m_blocksize);
+			(p.X >= 0 ? p.X : p.X - m_blocksize + 1) / m_blocksize,
+			(p.Y >= 0 ? p.Y : p.Y - m_blocksize + 1) / m_blocksize);
 	}
 
-	FixedHeightmap * getHeightmap(v2s16 p, bool generate=true);
-	
-	f32 getGroundHeight(v2s16 p, bool generate=true);
-	void setGroundHeight(v2s16 p, f32 y, bool generate=true);
+	FixedHeightmap * getHeightmap(v2s16 p, bool generate = true);
+
+	f32 getGroundHeight(v2s16 p, bool generate = true);
+	void setGroundHeight(v2s16 p, f32 y, bool generate = true);
 };
 
 #endif

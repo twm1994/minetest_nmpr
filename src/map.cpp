@@ -63,11 +63,11 @@ Map::Map():
 	camera_position(0,0,0),
 	camera_direction(0,0,1),
 	updater(this),
-	//m_heightmap(16, 66.0, 0.0, 0.0),
+	m_heightmap(16, 0.0, 0.0, 0.0),
 	// m_heightmap(32, 66.0, 0.6, 0.0),
-	m_heightmap(16, 40.0, 0.6, 0.0),
+	//m_heightmap(16, 40.0, 0.6, 0.0),
 	//m_heightmap(16, 0.0, 0.0, 0.0),
-	// m_heightmap(4, 0.0, 0.0, 0.0),
+	//m_heightmap(4, 0.0, 0.0, 0.0),
 	m_sector_cache(NULL),
 	m_hwrapper(this),
 	drawoffset(0,0,0)
@@ -866,7 +866,7 @@ core::aabbox3d<s16> Map::getDisplayedBlockArea()
 void Map::renderMap(video::IVideoDriver* driver,
 	video::SMaterial *materials)
 {
-	//std::cout<<"Rendering map..."<<std::endl;
+	//std::cout<<"*********Rendering map..."<<std::endl;
 
 	/*
 		Collect all blocks that are in the view range
@@ -1127,10 +1127,10 @@ MapSector * MasterMap::getSector(v2s16 p2d)
 	{
 	}
 
-	/*std::cout<<"Map::getSector(("<<p2d.X<<","<<p2d.Y
-			<<")): generating"<<std::endl;*/
+	std::cout<<"Map::getSector(("<<p2d.X<<","<<p2d.Y
+			<<")): generating"<<std::endl;
 
-	//std::cout<<"Generating heightmap..."<<std::endl;
+	std::cout<<"Generating heightmap..."<<std::endl;
 
 	f32 corners[4] = {
 		m_heightmap.getGroundHeight(p2d+v2s16(0,0)),

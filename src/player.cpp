@@ -32,7 +32,7 @@ Player::Player(
 {
 	m_box = core::aabbox3d<f32>(-BS, -BS, -BS, BS, BS, BS);
 
-	m_bill = NULL;
+	//m_bill = NULL;
 
 	//if(is_local == false)
 	//{
