@@ -189,7 +189,7 @@ public:
 	void print()
 	{
 		//printf("FixedHeightmap::print(): size is %ix%i\n", W, H);
-		dout_map_gen << "FixedHeightmap::print(): size is " << W << "x" << H << std::endl;
+		dout_map_gen << "-----FixedHeightmap::print(): size is " << W << "x" << H << std::endl;
 		for (s32 y = 0; y < H; y++) {
 			for (s32 x = 0; x < W; x++) {
 				/*if(getSeeded(v2s16(x,y)))

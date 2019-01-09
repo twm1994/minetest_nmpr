@@ -231,11 +231,12 @@ FixedHeightmap * UnlimitedHeightmap::getHeightmap(v2s16 p, bool generate)
 
 	// If heightmap doesn't exist, generate one
 	FixedHeightmap *heightmap = new FixedHeightmap(
-		this, p, m_blocksize);
+		this, p, m_blocksize);//p is heightmappos ranging from 0 to (m_blocksize-1) -> m_pos_on_master
 
 	m_heightmaps.insert(p, heightmap);
 
 	f32 corners[] = { m_basevalue, m_basevalue, m_basevalue, m_basevalue };
+	dout_map_gen << "*** UnlimitedHeightmap::getHeightmap() calling generateContinued() ***" << std::endl;
 	heightmap->generateContinued(m_randmax, m_randfactor, corners);
 
 	return heightmap;
@@ -243,8 +244,8 @@ FixedHeightmap * UnlimitedHeightmap::getHeightmap(v2s16 p, bool generate)
 
 f32 UnlimitedHeightmap::getGroundHeight(v2s16 p, bool generate)
 {
-	v2s16 heightmappos = getNodeHeightmapPos(p);
-	v2s16 relpos = p - heightmappos * m_blocksize;
+	v2s16 heightmappos = getNodeHeightmapPos(p);//heightmappos ranges from 0 to (m_blocksize-1)
+	v2s16 relpos = p - heightmappos * m_blocksize; //relpos ranges from 0 to (m_blocksize-1)
 	try {
 		FixedHeightmap * href = getHeightmap(heightmappos, generate);
 		f32 h = href->getGroundHeight(relpos);
@@ -340,9 +341,12 @@ void FixedHeightmap::generateContinued(f32 randmax, f32 randfactor,
 	f32 *corners)
 {
 	if (HEIGHTMAP_DEBUGPRINT) {
-		dout_map_gen << "FixedHeightmap(" << m_pos_on_master.X
+		dout_map_gen << "----- From FixedHeightmap(" << m_pos_on_master.X
 			<< "," << m_pos_on_master.Y
-			<< ")::generateContinued()" << std::endl;
+			<< ")::generateContinued() ";
+		dout_map_gen << "---randmax: " << randmax
+			<< ", randfactor: " << randfactor <<" -----"
+			<< std::endl;
 	}
 	/*
 		TODO: Implement changing neighboring heightmaps when needed
