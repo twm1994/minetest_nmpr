@@ -200,7 +200,7 @@ public:
 				//printf("  -   ");
 				else {
 					dout_map_gen << fixed;
-					dout_map_gen << " || " << getGroundHeight(v2s16(x, y)) << " || ";
+					dout_map_gen << "|" << getGroundHeight(v2s16(x, y)) << "| ";
 					dout_map_gen.unsetf(ios::fixed);
 					//printf("% -5.1f ", getGroundHeight(v2s16(x, y)));
 				}

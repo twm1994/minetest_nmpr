@@ -16,7 +16,7 @@ Environment::~Environment()
 	}
 }
 
-void Environment::step(float dtime)
+void Environment::step(f32 dtime)
 {
 	// Increment timeout of players
 	// TODO: Must reset the timeout somewhere, too.
