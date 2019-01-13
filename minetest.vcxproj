@@ -92,6 +92,7 @@
     <ClCompile Include="src\map.cpp" />
     <ClCompile Include="src\mapblock.cpp" />
     <ClCompile Include="src\mapsector.cpp" />
+    <ClCompile Include="src\npc.cpp" />
     <ClCompile Include="src\player.cpp" />
     <ClCompile Include="src\server.cpp" />
     <ClCompile Include="src\socket.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="src\mapblock.h" />
     <ClInclude Include="src\mapnode.h" />
     <ClInclude Include="src\mapsector.h" />
+    <ClInclude Include="src\npc.h" />
     <ClInclude Include="src\player.h" />
     <ClInclude Include="src\server.h" />
     <ClInclude Include="src\socket.h" />

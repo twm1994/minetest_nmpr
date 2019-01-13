@@ -181,6 +181,7 @@ channel:
 #define PEER_ID_NEW 0
 #define PEER_ID_SERVER 1
 #define CHANNEL_COUNT 3
+#define NPC_ID_NEW 100
 /*
 Packet types:
 

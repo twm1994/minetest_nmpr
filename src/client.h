@@ -125,6 +125,7 @@ public:
 	Player * getLocalPlayer();
 	// Return value is valid until step()
 	core::list<Player*> getPlayers();
+	core::list<Npc*> getNpcs();
 	
 private:
 	

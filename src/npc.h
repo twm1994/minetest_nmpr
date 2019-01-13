@@ -1,9 +1,9 @@
 /*
-(c) 2010 Perttu Ahola <celeron55@gmail.com>
+modified on player.h
 */
 
-#ifndef PLAYER_HEADER
-#define PLAYER_HEADER
+#ifndef NPC_HEADER
+#define NPC_HEADER
 
 #include <irrlicht.h>
 #include "common_irrlicht.h"
@@ -18,18 +18,16 @@ class Map;
 	TODO: Make this a scene::ISceneNode
 */
 
-class Player : public scene::ISceneNode
+class Npc : public scene::ISceneNode
 {
 public:
-	Player(bool is_local);
 
-	Player(
-		bool is_local,
+	Npc(
 		scene::ISceneNode* parent,
 		scene::ISceneManager* mgr,
 		s32 id);
 
-	~Player();
+	~Npc();
 
 	//void animateStand()
 	//{
@@ -80,43 +78,34 @@ public:
 		updateSceneNodePosition();
 	}
 
-	//v3f getRotation()
-	//{
-	//	return m_rotation;
-	//}
+	v3f getRotation()
+	{
+		return m_rotation;
+	}
 
-	//void setRotation(v3f rotation)
-	//{
-	//	m_rotation = rotation;
-	//	updateSceneNodeRotation();
-	//}
+	void setRotation(v3f rotation)
+	{
+		m_rotation = rotation;
+		updateSceneNodeRotation();
+	}
 
 	void updateSceneNodePosition()
 	{
 		ISceneNode::setPosition(m_position);
 	}
 
-	//void updateSceneNodeRotation() 
-	//{
-	//	ISceneNode::setRotation(m_rotation);
-	//}
-
-	bool isLocal()
+	void updateSceneNodeRotation() 
 	{
-		return m_is_local;
+		ISceneNode::setRotation(m_rotation);
 	}
 
 	v3f speed;
 	bool touching_ground;
-	u16 peer_id;
-	float timeout_counter;
+	u16 npc_id;
 
 private:
-	bool m_is_local;
 	v3f m_position;
 	v3f m_rotation;
-	//scene::ISceneNode* m_bill;
-	//scene::IBillboardSceneNode* m_bill;
 	scene::IAnimatedMesh*           avatar;
 	scene::IAnimatedMeshSceneNode*  avatar_node;
 	video::SMaterial                material;

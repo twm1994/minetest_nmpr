@@ -13,6 +13,7 @@
 #include <list>
 #include "common_irrlicht.h"
 #include "player.h"
+#include "npc.h"
 #include "map.h"
 #include <ostream>
 
@@ -37,9 +38,13 @@ public:
 	Player * getLocalPlayer();
 	Player * getPlayer(u16 peer_id);
 	core::list<Player*> getPlayers();
+	core::list<Npc*> getNpcs();
+	void addNpc(Npc *npc);
 private:
 	Map *m_map;
 	core::list<Player*> m_players;
+	core::list<Npc*> m_npcs;
+
 	// Debug output goes here
 	std::ostream &m_dout;
 };

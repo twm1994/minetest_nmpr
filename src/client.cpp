@@ -56,6 +56,17 @@ Client::Client(scene::ISceneManager* smgr, video::SMaterial *materials):
 		f32 y = BS*2 + BS*20;
 		player->setPosition(v3f(0, y, 0));
 		m_env.addPlayer(player);
+
+		//add 5 random npcs
+		for (int i = 0; i < 5; i++)
+		{
+			Npc *npc = new Npc(smgr->getRootSceneNode(), smgr, i+100);
+			f32 x = ((float)rand() / (float)(RAND_MAX / 2) - 1.0)*100;
+			f32 z = ((float)rand() / (float)(RAND_MAX / 2) - 1.0) * 100;
+			npc->setPosition(v3f(x, y, z));
+			npc->setRotation(v3f(0, ((float)rand() / (float)(RAND_MAX / 2) - 1.0) * 100, 0));
+			m_env.addNpc(npc);
+		}
 	}
 }
 
@@ -511,5 +522,10 @@ core::list<Player*> Client::getPlayers()
 	JMutexAutoLock envlock(m_env_mutex);
 	return m_env.getPlayers();
 }
-	
+
+core::list<Npc*> Client::getNpcs()
+{
+	JMutexAutoLock envlock(m_env_mutex);
+	return m_env.getNpcs();
+}
 

@@ -81,6 +81,7 @@ using namespace jthread; // JThread 1.3 support
 #include "common_irrlicht.h"
 #include "map.h"
 #include "player.h"
+#include "npc.h"
 #include "main.h"
 #include "test.h"
 #include "environment.h"
@@ -559,7 +560,7 @@ int main()
 		client.connect(connect_address);
 
 		Player *player = client.getLocalPlayer();
-
+		//core::list<Npc*> npcs = client.getNpcs();
 
 		/*
 			Create the camera node
@@ -732,6 +733,8 @@ int main()
 			else if (player->speed.Z > speed.Z)
 				player->speed.Z = speed.Z;
 
+
+
 			/*
 				Process environment
 			*/
@@ -777,23 +780,25 @@ int main()
 			// 		player->getPosition() + v3f(0, BS+BS/2, -10);
 			v3f p = player->getPosition();
 			dout_dummy << "-Local player location at time " << time << ": (" << p.X << "," << p.Y << "," << p.Z << ")" << std::endl;
-			v3f camera_position =
-				player->getPosition() + v3f(0, BS, 0) + camera_zoom;
 
-			//camera->setPosition(camera_position);
-			//camera->setTarget(camera_position + camera_direction);
-			if (camera_zoom.Z == zoom_max)
-			{
-				camera->setPosition(camera_position);
-				camera->setTarget(camera_position + camera_direction);
-				camera->bindTargetAndRotation(true);
-			}
-			else
-			{
-				camera->setPosition(camera_position + v3f(0, BS, 0));
-				camera->setTarget(player->getPosition());
-				camera->bindTargetAndRotation(true);
-			}
+			// BS*1.7 is the value of PLAYER_HEIGHT in player.cpp
+			v3f camera_position =
+				player->getPosition() + v3f(0, BS*1.7 + BS, 0) + camera_zoom;
+
+			camera->setPosition(camera_position);
+			camera->setTarget(camera_position + camera_direction);
+			//if (camera_zoom.Z == zoom_max)
+			//{
+			//	camera->setPosition(camera_position);
+			//	camera->setTarget(camera_position + camera_direction);
+			//	camera->bindTargetAndRotation(true);
+			//}
+			//else
+			//{
+			//	camera->setPosition(camera_position + v3f(0, BS, 0));
+			//	camera->setTarget(player->getPosition());
+			//	camera->bindTargetAndRotation(true);
+			//}
 
 
 			if (FIELD_OF_VIEW_TEST) {
