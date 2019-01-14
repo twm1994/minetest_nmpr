@@ -102,9 +102,9 @@ removed:
 			{
 				Npc *npc = *j;
 				//npc->setRotation(v3f(0, ((float)rand() / (float)(RAND_MAX / 2) - 1.0) * 100, 0));
-				npc->speed.X = 4 * BS * (rand() % 3 - 1);
+				npc->speed.X = 15 * BS * (rand() % 3 - 1);
 				npc->speed.Y -= 9.81 * BS * dtime_part * 2;
-				npc->speed.Z = 4 * BS * (rand() % 3 - 1);
+				npc->speed.Z = 15 * BS * (rand() % 3 - 1);
 				npc->move(dtime_part, *m_map);
 			}
 		}
