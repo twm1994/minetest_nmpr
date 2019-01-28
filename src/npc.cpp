@@ -25,7 +25,7 @@ Npc::Npc(
 		avatar_node->setMaterialFlag(video::EMF_LIGHTING, false);
 		avatar_node->setMaterialTexture(0, driver->getTexture("../data/character.png"));
 		avatar_node->setFrameLoop(200, 220);
-		avatar_node->setAnimationSpeed(32);
+		avatar_node->setAnimationSpeed(8);
 		// this->animateStand();
 		avatar_node->setScale(v3f(1, 1, 1));
 		avatar_node->setPosition(v3f(0, 0, 0));

@@ -1178,8 +1178,10 @@ ClientMap::ClientMap(
 					map->getSizeNodes().X * BS,
 					map->getSizeNodes().Y * BS,
 					map->getSizeNodes().Z * BS);*/
-	m_box = core::aabbox3d<f32>(-BS * 1000000, -BS * 1000000, -BS * 1000000,
-		BS * 1000000, BS * 1000000, BS * 1000000);
+	//m_box = core::aabbox3d<f32>(-BS * 1000000, -BS * 1000000, -BS * 1000000,
+	//	BS * 1000000, BS * 1000000, BS * 1000000);
+	m_box = core::aabbox3d<f32>(-BS * 1000, -BS * 1000, -BS * 1000,
+		BS * 1000, BS * 1000, BS * 1000);
 }
 
 MapSector * ClientMap::getSector(v2s16 p2d)
