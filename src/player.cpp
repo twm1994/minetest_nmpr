@@ -71,6 +71,7 @@ Player::~Player()
 void Player::move(f32 dtime, Map &map)
 {
 	// this->avatar_node->setFrameLoop(168,188);
+	setRotation(m_rotation);
 	v3f position = getPosition();
 	v3f oldpos = position;
 	v3s16 oldpos_i = Map::floatToInt(oldpos);

@@ -586,8 +586,8 @@ int main()
 		camera->setFarValue(BS * 1000);
 
 #define ZOOM_MAX 0
-#define ZOOM_MIN (-2.0*BS)
-#define ZOOM_SPEED (0.8*BS)
+#define ZOOM_MIN (-5.0*BS)
+#define ZOOM_SPEED (0.4*BS)
 
 		f32 camera_yaw = 0; // "right/left"
 		f32 camera_pitch = 0; // "up/down"
@@ -595,7 +595,7 @@ int main()
 		f32 zoom_max = ZOOM_MAX;
 		f32 zoom_min = ZOOM_MIN;
 		f32 zoom_speed = ZOOM_SPEED;
-		v3f camera_zoom = v3f(0, 0, ZOOM_MAX);
+		f32 camera_zoom = 0; // zoom distance control
 
 		// Random constants
 #define WALK_ACCELERATION (4.0 * BS)
@@ -653,24 +653,27 @@ int main()
 				break;
 			}
 
+			v3f zoom_direction = v3f(0, 0, 1);
+			zoom_direction.rotateXZBy(camera_yaw);
 			/*Camera control*/
 			if (receiver.IsKeyDown(irr::KEY_UP))
 			{
-				camera_zoom += v3f(0, 0, zoom_speed*dtime);
+				camera_zoom += zoom_speed;
 			}
 
 			if (receiver.IsKeyDown(irr::KEY_DOWN))
 			{
-				camera_zoom -= v3f(0, 0, zoom_speed*dtime);
+				camera_zoom -= zoom_speed;
 			}
-			if (camera_zoom.Z < zoom_min)
+			if (camera_zoom < zoom_min)
 			{
-				camera_zoom = v3f(0, 0, zoom_min);
+				camera_zoom = zoom_min;
 			}
-			else if (camera_zoom.Z > zoom_max)
+			else if (camera_zoom > zoom_max)
 			{
-				camera_zoom = v3f(0, 0, zoom_max);
+				camera_zoom = zoom_max;
 			}
+
 			/*
 				Player speed control
 			*/
@@ -776,6 +779,7 @@ int main()
 			camera_direction.rotateYZBy(camera_pitch);
 			camera_direction.rotateXZBy(camera_yaw);
 
+			player->setRotation(v3f(0, -1 * camera_yaw, 0));
 			// v3f camera_position =
 			// 		player->getPosition() + v3f(0, BS+BS/2, -10);
 			v3f p = player->getPosition();
@@ -783,7 +787,7 @@ int main()
 
 			// BS*1.7 is the value of PLAYER_HEIGHT in player.cpp
 			v3f camera_position =
-				player->getPosition() + v3f(0, BS*1.7 + BS, 0) + camera_zoom;
+				player->getPosition() + v3f(0, BS*1.7 + BS, 0) + zoom_direction * camera_zoom;
 
 			camera->setPosition(camera_position);
 			camera->setTarget(camera_position + camera_direction);

@@ -80,26 +80,26 @@ public:
 		updateSceneNodePosition();
 	}
 
-	//v3f getRotation()
-	//{
-	//	return m_rotation;
-	//}
+	v3f getRotation()
+	{
+		return m_rotation;
+	}
 
-	//void setRotation(v3f rotation)
-	//{
-	//	m_rotation = rotation;
-	//	updateSceneNodeRotation();
-	//}
+	void setRotation(v3f rotation)
+	{
+		m_rotation = rotation;
+		updateSceneNodeRotation();
+	}
 
 	void updateSceneNodePosition()
 	{
 		ISceneNode::setPosition(m_position);
 	}
 
-	//void updateSceneNodeRotation() 
-	//{
-	//	ISceneNode::setRotation(m_rotation);
-	//}
+	void updateSceneNodeRotation() 
+	{
+		ISceneNode::setRotation(m_rotation);
+	}
 
 	bool isLocal()
 	{
