@@ -587,15 +587,21 @@ int main()
 
 #define ZOOM_MAX 0
 #define ZOOM_MIN (-5.0*BS)
-#define ZOOM_SPEED (0.4*BS)
+#define ZOOM_SPEED (0.02*BS)
+#define ROTATE_SPEED 1
 
 		f32 camera_yaw = 0; // "right/left"
 		f32 camera_pitch = 0; // "up/down"
 
+		// camera zoom distance control
 		f32 zoom_max = ZOOM_MAX;
 		f32 zoom_min = ZOOM_MIN;
 		f32 zoom_speed = ZOOM_SPEED;
-		f32 camera_zoom = 0; // zoom distance control
+		f32 camera_zoom = 0;
+
+		// camera rotate control
+		f64 rotate_speed = ROTATE_SPEED;
+		f64 camera_rotate = 0;
 
 		// Random constants
 #define WALK_ACCELERATION (4.0 * BS)
@@ -655,7 +661,7 @@ int main()
 
 			v3f zoom_direction = v3f(0, 0, 1);
 			zoom_direction.rotateXZBy(camera_yaw);
-			/*Camera control*/
+			/*Camera zoom*/
 			if (receiver.IsKeyDown(irr::KEY_UP))
 			{
 				camera_zoom += zoom_speed;
@@ -674,6 +680,16 @@ int main()
 				camera_zoom = zoom_max;
 			}
 
+			/*Camera rotate*/
+			if (receiver.IsKeyDown(irr::KEY_LEFT))
+			{
+				camera_rotate -= rotate_speed;
+			}
+
+			if (receiver.IsKeyDown(irr::KEY_RIGHT))
+			{
+				camera_rotate += rotate_speed;
+			}
 			/*
 				Player speed control
 			*/
@@ -779,30 +795,21 @@ int main()
 			camera_direction.rotateYZBy(camera_pitch);
 			camera_direction.rotateXZBy(camera_yaw);
 
-			player->setRotation(v3f(0, -1 * camera_yaw, 0));
-			// v3f camera_position =
-			// 		player->getPosition() + v3f(0, BS+BS/2, -10);
 			v3f p = player->getPosition();
+
+			zoom_direction.rotateXZBy(camera_rotate);
+			camera_direction.rotateXZBy(camera_rotate);
+			player->setRotation(v3f(0, -1 * camera_yaw, 0));
+
+
 			dout_dummy << "-Local player location at time " << time << ": (" << p.X << "," << p.Y << "," << p.Z << ")" << std::endl;
 
 			// BS*1.7 is the value of PLAYER_HEIGHT in player.cpp
 			v3f camera_position =
-				player->getPosition() + v3f(0, BS*1.7 + BS, 0) + zoom_direction * camera_zoom;
+				p + v3f(0, BS*1.7 + BS, 0) + zoom_direction * camera_zoom;
 
 			camera->setPosition(camera_position);
 			camera->setTarget(camera_position + camera_direction);
-			//if (camera_zoom.Z == zoom_max)
-			//{
-			//	camera->setPosition(camera_position);
-			//	camera->setTarget(camera_position + camera_direction);
-			//	camera->bindTargetAndRotation(true);
-			//}
-			//else
-			//{
-			//	camera->setPosition(camera_position + v3f(0, BS, 0));
-			//	camera->setTarget(player->getPosition());
-			//	camera->bindTargetAndRotation(true);
-			//}
 
 
 			if (FIELD_OF_VIEW_TEST) {
