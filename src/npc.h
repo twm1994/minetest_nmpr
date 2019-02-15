@@ -7,6 +7,7 @@ modified on player.h
 
 #include <irrlicht.h>
 #include "common_irrlicht.h"
+#include "map.h"
 
 using namespace irr;
 //typedef core::vector3df v3f;
@@ -44,6 +45,8 @@ public:
 	//}
 
 	void move(f32 dtime, Map &map);
+
+	void randomWalk(f32 dtime, Map &map);
 
 	/*
 		ISceneNode methods
@@ -89,6 +92,26 @@ public:
 		updateSceneNodeRotation();
 	}
 
+	int getStepCounter()
+	{
+		return m_step_counter;
+	}
+
+	void increaseStepCounter()
+	{
+		m_step_counter++;
+	}
+
+	void resetStepCounter()
+	{
+		m_step_counter=0;
+	}
+
+	int getStepMax()
+	{
+		return m_step_max;
+	}
+
 	void updateSceneNodePosition()
 	{
 		ISceneNode::setPosition(m_position);
@@ -104,6 +127,11 @@ public:
 	u16 npc_id;
 
 private:
+	int m_step_counter = 0;
+	int m_step_max = 400; // max game step to reset walking direction
+	f32 m_walk_speed = 4.0 * BS;
+	v3f m_speed_vector = v3f(0, 0, m_walk_speed);
+	f32 m_yaw;
 	v3f m_position;
 	v3f m_rotation;
 	scene::IAnimatedMesh*           avatar;

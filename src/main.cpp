@@ -698,26 +698,21 @@ int main()
 			move_direction.rotateXZBy(camera_yaw);
 
 			v3f speed = v3f(0, 0, 0);
-			// player->animateStand();
 			if (receiver.IsKeyDown(irr::KEY_KEY_W))
 			{
 				speed += move_direction;
-				// player->animateMove();
 			}
 			if (receiver.IsKeyDown(irr::KEY_KEY_S))
 			{
 				speed -= move_direction;
-				// player->animateMove();
 			}
 			if (receiver.IsKeyDown(irr::KEY_KEY_A))
 			{
 				speed += move_direction.crossProduct(v3f(0, 1, 0));
-				// player->animateMove();
 			}
 			if (receiver.IsKeyDown(irr::KEY_KEY_D))
 			{
 				speed += move_direction.crossProduct(v3f(0, -1, 0));
-				// player->animateMove();
 			}
 			if (receiver.IsKeyDown(irr::KEY_SPACE))
 			{
@@ -725,7 +720,6 @@ int main()
 					//player_speed.Y = 30*BS;
 					//player.speed.Y = 5*BS;
 					player->speed.Y = 6.5*BS;
-					// player->animateMove();
 				}
 			}
 
@@ -733,7 +727,6 @@ int main()
 			speed = speed.normalize() * walkspeed_max;
 
 			f32 inc = walk_acceleration * BS * dtime;
-
 			if (player->speed.X < speed.X - inc)
 				player->speed.X += inc;
 			else if (player->speed.X > speed.X + inc)
@@ -778,14 +771,14 @@ int main()
 					first_loop_after_window_activation = false;
 				}
 				else {
-					s32 dx = device->getCursorControl()->getPosition().X - 320;
-					s32 dy = device->getCursorControl()->getPosition().Y - 240;
+					s32 dx = device->getCursorControl()->getPosition().X - 400;
+					s32 dy = device->getCursorControl()->getPosition().Y - 300;
 					camera_yaw -= dx * 0.2;
 					camera_pitch += dy * 0.2;
 					if (camera_pitch < -89.9) camera_pitch = -89.9; // look up
 					if (camera_pitch > 89.9) camera_pitch = 89.9; // look down
 				}
-				device->getCursorControl()->setPosition(320, 240);
+				device->getCursorControl()->setPosition(400, 300);
 			}
 			else {
 				first_loop_after_window_activation = true;

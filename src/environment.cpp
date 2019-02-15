@@ -102,10 +102,30 @@ removed:
 			{
 				Npc *npc = *j;
 				//npc->setRotation(v3f(0, ((float)rand() / (float)(RAND_MAX / 2) - 1.0) * 100, 0));
-				npc->speed.X = 15 * BS * (rand() % 3 - 1);
+				//npc->speed.X = 15 * BS * (rand() % 3 - 1);
 				npc->speed.Y -= 9.81 * BS * dtime_part * 2;
-				npc->speed.Z = 15 * BS * (rand() % 3 - 1);
-				npc->move(dtime_part, *m_map);
+				//npc->speed.Z = 15 * BS * (rand() % 3 - 1);
+				//npc->move(dtime_part, *m_map);
+				npc->randomWalk(dtime_part, *m_map);
+				//int counter = npc->getStepCounter();
+				//if (counter == 0) {
+				//	f32 yaw = ((float)rand()) / (float)RAND_MAX * 359;
+				//	v3f rotation = npc->getRotation();
+				//	rotation.rotateXZBy(yaw);
+				//	//std::cout << "NPC: " << npc->npc_id << ", rotation: (" << rotation.X << "," << rotation.Y << "," << rotation.Z << ")" << std::endl;
+				//	npc->setRotation(rotation);
+				//}
+				//if (rand() % 2) {
+				//	//std::cout << "move" << std::endl;
+				//	//npc->speed.X = 15 * BS * (rand() % 3 - 1);
+				//	npc->speed.Z = 15 * BS;
+				//	//npc->speed.Y -= 9.81 * BS * dtime_part * 2;
+				//	npc->move(dtime_part, *m_map);
+				//}
+				//npc->increaseStepCounter();
+				//if ((counter + 1) == npc->getStepMax()) {
+				//	npc->resetStepCounter();
+				//}
 			}
 		}
 

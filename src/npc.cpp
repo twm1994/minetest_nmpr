@@ -6,6 +6,9 @@ modified on npc.cpp
 #include "map.h"
 #include "connection.h"
 
+#define NPC_RADIUS (BS*0.3)
+#define NPC_HEIGHT (BS*1.7)
+
 Npc::Npc(
 	scene::ISceneNode* parent,
 	scene::ISceneManager* mgr,
@@ -53,16 +56,9 @@ Npc::~Npc()
 
 void Npc::move(f32 dtime, Map &map)
 {
-	//v3f rotation = getRotation();
-	//setRotation(rotation);
-	
-	// this->avatar_node->setFrameLoop(168,188);
 	v3f position = getPosition();
 	v3f oldpos = position;
 	v3s16 oldpos_i = Map::floatToInt(oldpos);
-
-	/*std::cout<<"oldpos_i=("<<oldpos_i.X<<","<<oldpos_i.Y<<","
-			<<oldpos_i.Z<<")"<<std::endl;*/
 
 	position += speed * dtime;
 
@@ -70,9 +66,6 @@ void Npc::move(f32 dtime, Map &map)
 
 	// The frame length is limited to the npc going 0.1*BS per call
 	f32 d = (float)BS * 0.15;
-
-#define NPC_RADIUS (BS*0.3)
-#define NPC_HEIGHT (BS*1.7)
 
 	core::aabbox3d<f32> npcbox(
 		position.X - NPC_RADIUS,
@@ -95,19 +88,11 @@ void Npc::move(f32 dtime, Map &map)
 
 	touching_ground = false;
 
-	/*std::cout<<"Checking collisions for ("
-			<<oldpos_i.X<<","<<oldpos_i.Y<<","<<oldpos_i.Z
-			<<") -> ("
-			<<pos_i.X<<","<<pos_i.Y<<","<<pos_i.Z
-			<<"):"<<std::endl;*/
-
 	for (s16 y = oldpos_i.Y - 1; y <= oldpos_i.Y + 2; y++) {
 		for (s16 z = oldpos_i.Z - 1; z <= oldpos_i.Z + 1; z++) {
 			for (s16 x = oldpos_i.X - 1; x <= oldpos_i.X + 1; x++) {
-				//std::cout<<"with ("<<x<<","<<y<<","<<z<<"): ";
 				try {
 					if (map.getNode(x, y, z).d == MATERIAL_AIR) {
-						//std::cout<<"air."<<std::endl;
 						continue;
 					}
 				}
@@ -187,7 +172,29 @@ void Npc::move(f32 dtime, Map &map)
 	} // for y
 
 	setPosition(position);
-	// avatar_node->setFrameLoop(168,188);
-	// this->avatar_node->setFrameLoop(0,80);
 }
 
+void  Npc::randomWalk(f32 dtime, Map &map) {
+	if (m_step_counter==0)
+	{
+		m_yaw = ((float)rand() / (float)(RAND_MAX / 2) - 1.0) * 180;
+		setRotation(v3f(0, -1 * m_yaw, 0));
+		v3f speed_vector = v3f(0, 0, m_walk_speed);
+		speed_vector.rotateXZBy(m_yaw);
+		m_speed_vector = speed_vector;
+	}
+	int b_walk = rand() % 2;
+	if (b_walk) {
+		speed.X = m_speed_vector.X;
+		if (touching_ground) {
+			speed.Y += rand() % 2 * 3 * BS;
+		}
+		speed.Z = m_speed_vector.Z;
+		move(dtime, map);
+	}
+	m_step_counter= m_step_counter+1;
+	if (m_step_counter==m_step_max)
+	{
+		m_step_counter = 0;
+	}
+}

@@ -61,10 +61,10 @@ Client::Client(scene::ISceneManager* smgr, video::SMaterial *materials):
 		for (int i = 0; i < 5; i++)
 		{
 			Npc *npc = new Npc(smgr->getRootSceneNode(), smgr, i+100);
-			f32 x = ((float)rand() / (float)(RAND_MAX / 2) - 1.0)*100;
-			f32 z = ((float)rand() / (float)(RAND_MAX / 2) - 1.0) * 100;
+			f32 x = ((float)rand() / (float)(RAND_MAX / 2) - 1.0)*256;
+			f32 z = ((float)rand() / (float)(RAND_MAX / 2) - 1.0) * 256;
 			npc->setPosition(v3f(x, y, z));
-			npc->setRotation(v3f(0, ((float)rand() / (float)(RAND_MAX / 2) - 1.0) * 100, 0));
+			npc->setRotation(v3f(0, ((float)rand() / (float)(RAND_MAX / 2) - 1.0) * 180, 0));
 			m_env.addNpc(npc);
 		}
 	}

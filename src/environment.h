@@ -47,6 +47,9 @@ private:
 
 	// Debug output goes here
 	std::ostream &m_dout;
+
+	int m_step_counter = 0;
+	int m_step_max = 50; // max game step to reset walking direction
 };
 
 #endif
