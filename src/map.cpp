@@ -65,7 +65,7 @@ Map::Map() :
 	updater(this),
 	//m_heightmap(16, 0.0, 0.0, 0.0),
 	// m_heightmap(32, 66.0, 0.6, 0.0),
-	m_heightmap(16, 40.0, 0.6, 0.0),
+	m_heightmap(16, 30.0, 0.6, 0.0),
 	//m_heightmap(16, 0.0, 0.0, 0.0),
 	//m_heightmap(4, 0.0, 0.0, 0.0),
 	m_sector_cache(NULL),
@@ -1129,10 +1129,9 @@ MapSector * MasterMap::getSector(v2s16 p2d)
 	{
 	}
 
-	dout_map_gen << "MasterMap::getSector(" << p2d.X << "," << p2d.Y
-		<< "): generating" << std::endl;
+	//dout_map_gen << "MasterMap::getSector(" << p2d.X << "," << p2d.Y << "): generating" << std::endl;
 
-	dout_map_gen << "Generating heightmap..." << std::endl;
+	//dout_map_gen << "Generating heightmap..." << std::endl;
 
 	f32 corners[4] = {
 		m_heightmap.getGroundHeight(p2d + v2s16(0,0)),
@@ -1145,7 +1144,7 @@ MapSector * MasterMap::getSector(v2s16 p2d)
 	gen = new HeightmapBlockGenerator(p2d, &m_hwrapper);
 	/*DummyHeightmap dummyheightmap;
 	gen = new HeightmapBlockGenerator(p2d, &dummyheightmap);*/
-	dout_map_gen << "~~~ HeightmapBlockGenerator::m_heightmap calling generateContinued() ~~~" << std::endl;
+	//dout_map_gen << "~~~ HeightmapBlockGenerator::m_heightmap calling generateContinued() ~~~" << std::endl;
 	gen->m_heightmap->generateContinued(2.0, 0.2, corners);
 	//sector->getHeightmap()->generateContinued(0.0, 0.0, corners);
 

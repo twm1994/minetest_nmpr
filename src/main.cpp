@@ -65,12 +65,12 @@ Actions:
 #endif
 
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#define sleep_ms(x) Sleep(x)
+	#define WIN32_LEAN_AND_MEAN
+	#include <windows.h>
+	#define sleep_ms(x) Sleep(x)
 #else
-#include <unistd.h>
-#define sleep_ms(x) usleep(x*1000)
+	#include <unistd.h>
+	#define sleep_ms(x) usleep(x*1000)
 #endif
 
 #include <iostream>
@@ -115,31 +115,27 @@ u16 g_selected_material = 0;
 	- use these to disable or enable outputs of parts of the program
 */
 
-//std::ofstream dfile("debug.txt");
-//std::ofstream dfile2("debug2.txt");
-std::ofstream dfile_con("debug_con.txt");
-std::ofstream dfile_server("debug_server.txt");
-std::ofstream dfile_client("debug_client.txt");
-std::ofstream dfile_dummy("debug_dummy.txt");
-std::ofstream dfile_map_gen("map_gen.txt");
-
-std::ostream dout_dummy(dfile_dummy.rdbuf());
-std::ostream dout_map_gen(dfile_map_gen.rdbuf());
+std::ofstream dfile("debug.txt");
+//std::ofstream dfile_con("debug_con.txt");
+//std::ofstream dfile_server("debug_server.txt");
+//std::ofstream dfile_client("debug_client.txt");
+//std::ofstream dfile_dummy("debug_dummy.txt");
+//std::ofstream dfile_map_gen("map_gen.txt");
+//
+//std::ostream dout_dummy(dfile_dummy.rdbuf());
+//std::ostream dout_map_gen(dfile_map_gen.rdbuf());
 
 // Connection
-//std::ostream dout_con(std::cout.rdbuf());
-//std::ostream dout_con(dfile.rdbuf());
-std::ostream dout_con(dfile_con.rdbuf());
+std::ostream dout_con(dfile.rdbuf());
+//std::ostream dout_con(dfile_con.rdbuf());
 
-// Server
-//std::ostream dout_server(std::cout.rdbuf());
-//std::ostream dout_server(dfile.rdbuf());
-std::ostream dout_server(dfile_server.rdbuf());
+// Server;
+std::ostream dout_server(dfile.rdbuf());
+//std::ostream dout_server(dfile_server.rdbuf());
 
 // Client
-//std::ostream dout_client(std::cout.rdbuf());
-//std::ostream dout_client(dfile.rdbuf());
-std::ostream dout_client(dfile_client.rdbuf());
+std::ostream dout_client(dfile.rdbuf());
+//std::ostream dout_client(dfile_client.rdbuf());
 
 /*
 	TimeTaker
@@ -566,18 +562,12 @@ int main()
 			Create the camera node
 		*/
 
-		//scene::ICameraSceneNode* camera = smgr->addCameraSceneNode(
-		//	0, // Camera parent
-		//	v3f(BS*100, BS*2, BS*100), // Look from
-		//	v3f(BS*100+1, BS*2, BS*100), // Look to
-		//	-1 // Camera ID
-	 //  	);
 		scene::ICameraSceneNode* camera = smgr->addCameraSceneNode(
 			0, // Camera parent
-			v3f(0, 0, 0), // Look from
-			v3f(0, 0, 1), // Look to
+			v3f(BS*100, BS*2, BS*100), // Look from
+			v3f(BS*100+1, BS*2, BS*100), // Look to
 			-1 // Camera ID
-		);
+	   	);
 		if (camera == NULL)
 			return 1;
 
@@ -585,7 +575,7 @@ int main()
 		// Just so big a value that everything rendered is visible
 		camera->setFarValue(BS * 1000);
 
-#define ZOOM_MAX 0
+#define ZOOM_MAX 1.5
 #define ZOOM_MIN (-5.0*BS)
 #define ZOOM_SPEED (0.02*BS)
 #define ROTATE_SPEED 1
@@ -771,14 +761,14 @@ int main()
 					first_loop_after_window_activation = false;
 				}
 				else {
-					s32 dx = device->getCursorControl()->getPosition().X - 400;
-					s32 dy = device->getCursorControl()->getPosition().Y - 300;
+					s32 dx = device->getCursorControl()->getPosition().X - screenW/2;
+					s32 dy = device->getCursorControl()->getPosition().Y - screenH/2;
 					camera_yaw -= dx * 0.2;
 					camera_pitch += dy * 0.2;
 					if (camera_pitch < -89.9) camera_pitch = -89.9; // look up
 					if (camera_pitch > 89.9) camera_pitch = 89.9; // look down
 				}
-				device->getCursorControl()->setPosition(400, 300);
+				device->getCursorControl()->setPosition(screenW / 2, screenH / 2);
 			}
 			else {
 				first_loop_after_window_activation = true;
@@ -790,16 +780,17 @@ int main()
 
 			v3f p = player->getPosition();
 
+			// addjust camera if pressing left/right arrow
 			zoom_direction.rotateXZBy(camera_rotate);
 			camera_direction.rotateXZBy(camera_rotate);
 			player->setRotation(v3f(0, -1 * camera_yaw, 0));
 
 
-			dout_dummy << "-Local player location at time " << time << ": (" << p.X << "," << p.Y << "," << p.Z << ")" << std::endl;
+			//dout_dummy << "-Local player location at time " << time << ": (" << p.X << "," << p.Y << "," << p.Z << ")" << std::endl;
 
 			// BS*1.7 is the value of PLAYER_HEIGHT in player.cpp
 			v3f camera_position =
-				p + v3f(0, BS*1.7 + BS, 0) + zoom_direction * camera_zoom;
+				p + v3f(0, BS*1.65, zoom_max) + zoom_direction * camera_zoom;
 
 			camera->setPosition(camera_position);
 			camera->setTarget(camera_position + camera_direction);

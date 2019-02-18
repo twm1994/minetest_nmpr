@@ -27,7 +27,7 @@ MapBlock * HeightmapBlockGenerator::makeBlock(MapSector *sector, s16 block_y)
 {
 	MapBlock *block = sector->createBlankBlockNoInsert(block_y);
 	v2s16 pos = sector->getPos();
-	dout_map_gen << "-----HeightmapBlockGenerator::makeBlock at (" << pos.X << "," << pos.Y << "), block_y: " << block_y << " -----" << std::endl;
+	//dout_map_gen << "-----HeightmapBlockGenerator::makeBlock at (" << pos.X << "," << pos.Y << "), block_y: " << block_y << " -----" << std::endl;
 	// Randomize a bit. This makes dungeons.
 	bool low_block_is_empty = false;
 	if (rand() % 4 == 0)

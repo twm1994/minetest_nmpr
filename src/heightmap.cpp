@@ -153,13 +153,13 @@ void FixedHeightmap::DiamondSquare(f32 randmax, f32 randfactor)
 		makeDiamonds(a, randmax);
 		if (HEIGHTMAP_DEBUGPRINT) {
 			//printf("----------MakeDiamonds a=%i result:\n", a);
-			dout_map_gen << "MakeDiamonds a=" << a << " result:" << std::endl;
+			//dout_map_gen << "MakeDiamonds a=" << a << " result:" << std::endl;
 			print();
 		}
 		makeSquares(a, randmax);
 		if (HEIGHTMAP_DEBUGPRINT) {
 			//printf("----------MakeSquares a=%i result:\n", a);
-			dout_map_gen << "MakeSquares a=" << a << " result:" << std::endl;
+			//dout_map_gen << "MakeSquares a=" << a << " result:" << std::endl;
 			print();
 		}
 		a /= 2;
@@ -177,7 +177,7 @@ void UnlimitedHeightmap::print()
 	i = m_heightmaps.getIterator();
 	if (i.atEnd()) {
 		//printf("UnlimitedHeightmap::print(): empty.\n");
-		dout_map_gen << "UnlimitedHeightmap::print(): empty." << std::endl;
+		//dout_map_gen << "UnlimitedHeightmap::print(): empty." << std::endl;
 		return;
 	}
 	for (; i.atEnd() == false; i++)
@@ -193,22 +193,22 @@ void UnlimitedHeightmap::print()
 	maxx = (maxx + 1) * m_blocksize;
 	maxy = (maxy + 1) * m_blocksize;
 	//printf("UnlimitedHeightmap::print(): from (%i,%i) to (%i,%i)\n",minx, miny, maxx, maxy);
-	dout_map_gen << "UnlimitedHeightmap::print(): from (" << minx << "," << miny << ") to (" << maxx << "," << maxy << ")" << std::endl;
+	//dout_map_gen << "UnlimitedHeightmap::print(): from (" << minx << "," << miny << ") to (" << maxx << "," << maxy << ")" << std::endl;
 	for (s32 y = miny; y <= maxy; y++) {
 		for (s32 x = minx; x <= maxx; x++) {
 			f32 n = getGroundHeight(v2s16(x, y), false);
-			if (n < GROUNDHEIGHT_VALID_MINVALUE)
-				dout_map_gen << " - ";
-			//printf("  -   ");
-			else {
-				dout_map_gen << fixed;
-				dout_map_gen << " || " << getGroundHeight(v2s16(x, y), false) << " || ";
-				dout_map_gen.unsetf(ios::fixed);
-				//printf("% -5.1f ", getGroundHeight(v2s16(x, y), false));
-			}
+			//if (n < GROUNDHEIGHT_VALID_MINVALUE)
+			//	dout_map_gen << " - ";
+			////printf("  -   ");
+			//else {
+			//	dout_map_gen << fixed;
+			//	dout_map_gen << " || " << getGroundHeight(v2s16(x, y), false) << " || ";
+			//	dout_map_gen.unsetf(ios::fixed);
+			//	//printf("% -5.1f ", getGroundHeight(v2s16(x, y), false));
+			//}
 
 		}
-		dout_map_gen << std::endl;
+		//dout_map_gen << std::endl;
 		//printf("\n");
 	}
 }
@@ -236,7 +236,7 @@ FixedHeightmap * UnlimitedHeightmap::getHeightmap(v2s16 p, bool generate)
 	m_heightmaps.insert(p, heightmap);
 
 	f32 corners[] = { m_basevalue, m_basevalue, m_basevalue, m_basevalue };
-	dout_map_gen << "*** UnlimitedHeightmap::getHeightmap() calling generateContinued() ***" << std::endl;
+	//dout_map_gen << "*** UnlimitedHeightmap::getHeightmap() calling generateContinued() ***" << std::endl;
 	heightmap->generateContinued(m_randmax, m_randfactor, corners);
 
 	return heightmap;
@@ -340,14 +340,14 @@ void UnlimitedHeightmap::setGroundHeight(v2s16 p, f32 y, bool generate)
 void FixedHeightmap::generateContinued(f32 randmax, f32 randfactor,
 	f32 *corners)
 {
-	if (HEIGHTMAP_DEBUGPRINT) {
-		dout_map_gen << "----- From FixedHeightmap(" << m_pos_on_master.X
-			<< "," << m_pos_on_master.Y
-			<< ")::generateContinued() ";
-		dout_map_gen << "---randmax: " << randmax
-			<< ", randfactor: " << randfactor <<" -----"
-			<< std::endl;
-	}
+	//if (HEIGHTMAP_DEBUGPRINT) {
+	//	dout_map_gen << "----- From FixedHeightmap(" << m_pos_on_master.X
+	//		<< "," << m_pos_on_master.Y
+	//		<< ")::generateContinued() ";
+	//	dout_map_gen << "---randmax: " << randmax
+	//		<< ", randfactor: " << randfactor <<" -----"
+	//		<< std::endl;
+	//}
 	/*
 		TODO: Implement changing neighboring heightmaps when needed
 	*/
@@ -419,7 +419,7 @@ void FixedHeightmap::generateContinued(f32 randmax, f32 randfactor,
 	}
 
 	if (HEIGHTMAP_DEBUGPRINT) {
-		dout_map_gen << "borders seeded:" << std::endl;
+		//dout_map_gen << "borders seeded:" << std::endl;
 		print();
 	}
 #endif
@@ -442,10 +442,10 @@ void FixedHeightmap::generateContinued(f32 randmax, f32 randfactor,
 		setGroundHeight(dirs[i] * a, corners[i]);
 	}
 
-	if (HEIGHTMAP_DEBUGPRINT) {
-		dout_map_gen << "corners filled:" << std::endl;
-		print();
-	}
+	//if (HEIGHTMAP_DEBUGPRINT) {
+	//	dout_map_gen << "corners filled:" << std::endl;
+	//	print();
+	//}
 
 	/*std::cout<<"Seeded heightmap:"<<std::endl;
 	print();*/

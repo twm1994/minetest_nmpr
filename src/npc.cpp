@@ -87,6 +87,7 @@ void Npc::move(f32 dtime, Map &map)
 	//hilightboxes.push_back(npcbox);
 
 	touching_ground = false;
+	jump_trigger = false;
 
 	for (s16 y = oldpos_i.Y - 1; y <= oldpos_i.Y + 2; y++) {
 		for (s16 z = oldpos_i.Z - 1; z <= oldpos_i.Z + 1; z++) {
@@ -157,7 +158,10 @@ void Npc::move(f32 dtime, Map &map)
 								break;
 							}
 						}
-
+						if (main_edge_collides && speed.dotProduct(dirs[i]) > 0 && z >= oldpos_i.Z && y >= oldpos_i.Y)
+						{
+							jump_trigger = true; // jump when collide with node in the front
+						}
 						if (main_edge_collides && other_edges_collide)
 						{
 							speed -= speed.dotProduct(dirs[i]) * dirs[i];
@@ -170,7 +174,9 @@ void Npc::move(f32 dtime, Map &map)
 			} // for x
 		} // for z
 	} // for y
-
+	if (jump_trigger && touching_ground) {
+		speed.Y = 9.81*BS;
+	}
 	setPosition(position);
 }
 
@@ -186,9 +192,9 @@ void  Npc::randomWalk(f32 dtime, Map &map) {
 	int b_walk = rand() % 2;
 	if (b_walk) {
 		speed.X = m_speed_vector.X;
-		if (touching_ground) {
-			speed.Y += rand() % 2 * 3 * BS;
-		}
+		//if ((rand() % 8 == 0) && touching_ground) {
+		//	speed.Y += 3 * BS;
+		//}
 		speed.Z = m_speed_vector.Z;
 		move(dtime, map);
 	}

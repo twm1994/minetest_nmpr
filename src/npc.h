@@ -134,6 +134,7 @@ private:
 	f32 m_yaw;
 	v3f m_position;
 	v3f m_rotation;
+	bool jump_trigger; // set NPC jumping  
 	scene::IAnimatedMesh*           avatar;
 	scene::IAnimatedMeshSceneNode*  avatar_node;
 	video::SMaterial                material;

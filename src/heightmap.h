@@ -188,27 +188,27 @@ public:
 
 	void print()
 	{
-		//printf("FixedHeightmap::print(): size is %ix%i\n", W, H);
-		dout_map_gen << "-----FixedHeightmap::print(): size is " << W << "x" << H << std::endl;
-		for (s32 y = 0; y < H; y++) {
-			for (s32 x = 0; x < W; x++) {
-				/*if(getSeeded(v2s16(x,y)))
-					printf("S");*/
-				f32 n = getGroundHeight(v2s16(x, y));
-				if (n < GROUNDHEIGHT_VALID_MINVALUE)
-					dout_map_gen << " - ";
-				//printf("  -   ");
-				else {
-					dout_map_gen << fixed;
-					dout_map_gen << "|" << getGroundHeight(v2s16(x, y)) << "| ";
-					dout_map_gen.unsetf(ios::fixed);
-					//printf("% -5.1f ", getGroundHeight(v2s16(x, y)));
-				}
+		printf("FixedHeightmap::print(): size is %ix%i\n", W, H);
+		//dout_map_gen << "-----FixedHeightmap::print(): size is " << W << "x" << H << std::endl;
+		//for (s32 y = 0; y < H; y++) {
+		//	for (s32 x = 0; x < W; x++) {
+		//		/*if(getSeeded(v2s16(x,y)))
+		//			printf("S");*/
+		//		f32 n = getGroundHeight(v2s16(x, y));
+		//		if (n < GROUNDHEIGHT_VALID_MINVALUE)
+		//			dout_map_gen << " - ";
+		//		//printf("  -   ");
+		//		else {
+		//			dout_map_gen << fixed;
+		//			dout_map_gen << "|" << getGroundHeight(v2s16(x, y)) << "| ";
+		//			dout_map_gen.unsetf(ios::fixed);
+		//			//printf("% -5.1f ", getGroundHeight(v2s16(x, y)));
+		//		}
 
-			}
-			//printf("\n");
-			dout_map_gen << std::endl;
-		}
+		//	}
+		//	//printf("\n");
+		//	dout_map_gen << std::endl;
+		// }
 	}
 
 	bool overborder(v2s16 p)
