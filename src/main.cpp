@@ -162,6 +162,8 @@ private:
 	u32 m_time1;
 };
 
+Player *player;
+
 class MyEventReceiver : public IEventReceiver
 {
 public:
@@ -180,6 +182,21 @@ public:
 					std::cout << "Selected material: "
 						<< g_selected_material << std::endl;
 				}
+			}
+			if (event.KeyInput.Key == KEY_KEY_W || event.KeyInput.Key == KEY_KEY_A || event.KeyInput.Key == KEY_KEY_S || event.KeyInput.Key == KEY_KEY_D)
+			{
+
+				if ((event.KeyInput.PressedDown) && (!walking)) //this will be done once 
+				{
+					walking = true;
+					player->animateMove();
+				}
+				else if ((!event.KeyInput.PressedDown) && (walking)) //this will be done on key up 
+				{
+					walking = false;
+					player->animateStand();
+				}
+
 			}
 		}
 
@@ -217,6 +234,7 @@ public:
 private:
 	// We use this array to store the current state of each key
 	bool keyIsDown[KEY_KEY_CODES_COUNT];
+	bool walking = false;
 	//s32 mouseX;
 	//s32 mouseY;
 };
@@ -555,7 +573,8 @@ int main()
 		}
 		client.connect(connect_address);
 
-		Player *player = client.getLocalPlayer();
+		player = client.getLocalPlayer();
+		player->animateStand();
 		//core::list<Npc*> npcs = client.getNpcs();
 
 		/*

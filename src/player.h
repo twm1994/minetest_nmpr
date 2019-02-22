@@ -31,19 +31,17 @@ public:
 
 	~Player();
 
-	//void animateStand()
-	//{
-	//	// avatar_node->setFrameLoop(0,80);
-	//	avatar_node->setFrameLoop(168,188);
-	//	avatar_node->setAnimationSpeed(32);
-	//}
+	void animateStand()
+	{
+		avatar_node->setFrameLoop(0,80);
+		avatar_node->setAnimationSpeed(32);
+	}
 
-	//void animateMove()
-	//{
-	//	// avatar_node->setFrameLoop(168,188);
-	//	avatar_node->setFrameLoop(0,80);
-	//	avatar_node->setAnimationSpeed(32);
-	//}
+	void animateMove()
+	{
+		avatar_node->setFrameLoop(168,188);
+		avatar_node->setAnimationSpeed(32);
+	}
 
 	void move(f32 dtime, Map &map);
 
