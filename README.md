@@ -1,20 +1,33 @@
 # Minetest NMPR
 
-This is an updated version of the [original repository](https://github.com/celeron55/minetest_nmpr) that works on Visual Studio 2017 Community version.
+This is an updated version of the [original repository](https://github.com/celeron55/minetest_nmpr) that works on OMNeT++ 5.4.1, using MinGW GCC toolchain.
 
-## Dependency
+## Dependencies and tools
 
- - [JThread 1.3.3](http://research.edm.uhasselt.be/jori/page/CS/Jthread.html)
- - [Irrlicht-1.8.4](http://irrlicht.sourceforge.net/)
- - [CMake](https://cmake.org/download/)
+ - [JThread 1.3.3](http://research.edm.uhasselt.be/jori/page/CS/Jthread.html) (Threading)
+ - [Irrlicht-1.8.4](http://irrlicht.sourceforge.net/) () (3D engine)
+ - [CMake](https://cmake.org) (Library building tool)
+ - [MinGW](http://www.mingw.org/) / [GNU Make](https://www.gnu.org/software/make/) (Library building tool)
+ - [Code::Block](http://www.codeblocks.org/) (Library building tool)
 
-## Modification on original repository
+## Change log
 
- - Update JThread and Irrlicht versions
- - Rebuild .lib and .h files in JThread
- - Update **Additional Include Directories** and **Additional Library Directories** in Visual Studio Properties Window, and corresponding `include` statements in source code
- - Change line `#pragma comment(lib, "WSock32.Lib")` to `#pragma comment(lib, "Ws2_32.Lib")` in **socket.h**
- - Copy **Irrlicht.dll** from **\bin\Win32-VisualStudio** in **Irrlicht folder** to the output folder that contains **minetest.exe**
+These changes are necessary to fix build errors
+ - In **socket.h**: add `#define` related to using windows socket utility
+ - In **loadstatus.h**: add `s{w,n}printf` definition
+ 
+## How to build
+
+ - Download JThread and Irrlicht source file
+ - Use CMake to build JThread makefile
+ - Run the makefile (Use msys on MinGW or GUN Make)
+ - Use Code::Block to build Irrlicht win32-gcc version .a and .dll files
+ - Make sure WS2_32 and gdi32 libraries are in the **Libraries** option of the OMNet++ project **Property**
+ - Add **Irrlicht.dll** and **libjthread.dll** to the output folder that contains the .exe file after building the project
+
+## Note
+
+This is currently on the mingw-gcc branch of the git repository. Make sure all local changes are pushed to this branch
 
 ## License
 

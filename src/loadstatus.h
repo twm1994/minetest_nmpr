@@ -1,6 +1,23 @@
 #ifndef LOADSTATUS_HEADER
 #define LOADSTATUS_HEADER
 
+#include <stdio.h>
+#include <wchar.h>
+
+//! Defines for s{w,n}printf because these methods do not match the ISO C
+//! standard on Windows platforms, but it does on all others.
+//! These should be int snprintf(char *str, size_t size, const char *format, ...);
+//! and int swprintf(wchar_t *wcs, size_t maxlen, const wchar_t *format, ...);
+#if defined(_MSC_VER) && _MSC_VER > 1310 && !defined (_WIN32_WCE)
+#define swprintf swprintf_s
+#define snprintf sprintf_s
+#elif !defined(__CYGWIN__)
+#define swprintf _snwprintf
+#define snprintf _snprintf
+#endif
+
+using namespace std;
+
 class LoadStatus
 {
 	bool ready;
