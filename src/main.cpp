@@ -799,7 +799,7 @@ int main()
 
 			v3f p = player->getPosition();
 
-			// addjust camera if pressing left/right arrow
+			// Adjust camera if pressing left/right arrow
 			zoom_direction.rotateXZBy(camera_rotate);
 			camera_direction.rotateXZBy(camera_rotate);
 			player->setRotation(v3f(0, -1 * camera_yaw, 0));
