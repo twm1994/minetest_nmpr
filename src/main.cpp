@@ -55,6 +55,9 @@ u16 g_selected_material = 0;
  */
 
 std::ofstream dfile("debug.txt");
+std::ofstream dfile_map("map.txt");
+
+std::ostream dmap(dfile_map.rdbuf());
 //std::ofstream dfile_con("debug_con.txt");
 //std::ofstream dfile_server("debug_server.txt");
 //std::ofstream dfile_client("debug_client.txt");
@@ -456,6 +459,11 @@ int main() {
 					break;
 				}
 			} else {
+				if (pauseOverlay->isVisible()) {
+					pauseOverlay->setVisible(false);
+					device->getCursorControl()->setVisible(false);
+					device->getTimer()->start();
+				}
 				/*
 				 Time difference calculation
 				 */
@@ -470,7 +478,7 @@ int main() {
 				updateViewingRange(dtime);
 
 				// Collected during the loop and displayed
-				core::list<core::aabbox3d<f32> > hilightboxes;
+//				core::list<core::aabbox3d<f32> > hilightboxes;
 
 				v3f zoom_direction = v3f(0, 0, 1);
 				zoom_direction.rotateXZBy(camera_yaw);
@@ -795,10 +803,10 @@ int main() {
 				m.Lighting = false;
 				driver->setMaterial(m);
 
-				for (core::list<core::aabbox3d<f32> >::Iterator i =
-						hilightboxes.begin(); i != hilightboxes.end(); i++) {
-					driver->draw3DBox(*i, video::SColor(255, 0, 0, 0));
-				}
+//				for (core::list<core::aabbox3d<f32> >::Iterator i =
+//						hilightboxes.begin(); i != hilightboxes.end(); i++) {
+//					driver->draw3DBox(*i, video::SColor(255, 0, 0, 0));
+//				}
 
 				guienv->drawAll();
 
@@ -833,7 +841,7 @@ int main() {
 			} // if (receiver.isPaused) {} else
 
 		}
-
+//		client.saveMap();
 		if (server != NULL)
 			delete server;
 

@@ -63,11 +63,8 @@ Map::Map() :
 	camera_position(0, 0, 0),
 	camera_direction(0, 0, 1),
 	updater(this),
-	//m_heightmap(16, 0.0, 0.0, 0.0),
-	// m_heightmap(32, 66.0, 0.6, 0.0),
-	m_heightmap(16, 30.0, 0.6, 0.0),
-	//m_heightmap(16, 0.0, 0.0, 0.0),
-	//m_heightmap(4, 0.0, 0.0, 0.0),
+	m_heightmap(
+				16, 0.0, 0.0, 0.0),
 	m_sector_cache(NULL),
 	m_hwrapper(this),
 	drawoffset(0, 0, 0)
