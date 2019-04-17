@@ -1,6 +1,6 @@
 #ifndef CLIENT_HEADER
 #define CLIENT_HEADER
-
+#include <map>
 #include "connection.h"
 #include "environment.h"
 #include "common_irrlicht.h"
@@ -126,6 +126,11 @@ private:
 	// -----for saving map-----
 	int getNodeType(u8 node);
 
+	// -----get MapNode position range of the given MapBlock position
+	int minVal(int v) {
+		return v * MAP_BLOCKSIZE;
+	}
+
 	void ReceiveAll();
 	void Receive();
 
@@ -139,6 +144,9 @@ private:
 
 	con::Connection m_con;
 	JMutex m_con_mutex;
+
+	// -----for saving map-----
+	std::map<std::array<int, 3>, int> m_nodes;
 
 	core::map<v3s16, float> m_fetchblock_history;
 	//core::list<v3s16> m_fetchblock_queue;

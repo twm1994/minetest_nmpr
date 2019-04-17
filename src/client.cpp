@@ -170,6 +170,11 @@ void Client::ProcessData(u8 *data, u32 datasize, u16 peer_id) {
 		p.X = readS16(&data[2]);
 		p.Y = readS16(&data[4]);
 		p.Z = readS16(&data[6]);
+
+		// -----change node to air-----
+		std::array<int, 3> idx = { p.X, p.Y, p.Z };
+		m_nodes[idx] = 254;
+
 		{
 			JMutexAutoLock envlock(m_env_mutex);
 			m_env.getMap().removeNodeAndUpdate(p);
@@ -182,6 +187,10 @@ void Client::ProcessData(u8 *data, u32 datasize, u16 peer_id) {
 		p.X = readS16(&data[2]);
 		p.Y = readS16(&data[4]);
 		p.Z = readS16(&data[6]);
+
+		// -----change node-----
+		std::array<int, 3> idx = { p.X, p.Y, p.Z };
+		m_nodes[idx] = getNodeType((&data[8])[0]);
 
 		MapNode n;
 		n.deSerialize(&data[8]);
@@ -279,6 +288,12 @@ int Client::getNodeType(u8 node) {
 }
 
 void Client::saveMap() {
+	dmap << "{";
+	for (auto itr = m_nodes.begin(); itr != m_nodes.end(); itr++) {
+		dmap << "{0:{" << (itr->first)[0] << "," << (itr->first)[1] << ","
+				<< (itr->first)[2] << "},1:" << itr->second << "},";
+	}
+	dmap << "}";
 //	core::map<v2s16, MapSector*>::Iterator i =
 //			m_env.getMap().m_sectors.getIterator();
 //	for (; i.atEnd() == false; i++) {
@@ -331,22 +346,24 @@ bool Client::AsyncProcessData() {
 		p.X = readS16(&data[2]);
 		p.Y = readS16(&data[4]);
 		p.Z = readS16(&data[6]);
+		int minX = minVal(p.X);
+		int minY = minVal(p.Y);
+		int minZ = minVal(p.Z);
 
+		// -----indexing in block: z*MAP_BLOCKSIZE*MAP_BLOCKSIZE + y*MAP_BLOCKSIZE + x-----
+		for (int z = 0; z < MAP_BLOCKSIZE; z++) {
+			for (int y = 0; y < MAP_BLOCKSIZE; y++) {
+				for (int x = 0; x < MAP_BLOCKSIZE; x++) {
+					std::array<int, 3> idx = { minX + x, minY + y, minZ + z };
+					int val = getNodeType(
+							(&data[8])[z * MAP_BLOCKSIZE * MAP_BLOCKSIZE
+									+ y * MAP_BLOCKSIZE + x]);
+					m_nodes[idx] = val;
+				} // for(int x=0;x<MAP_BLOCKSIZE;x++
+			} // for(int y=0;y<MAP_BLOCKSIZE;y++)
+		} // for(int z=0;z<MAP_BLOCKSIZE;z++)
 //		dout_client << "Client: Thread: BLOCKDATA for (" << p.X << "," << p.Y
 //				<< "," << p.Z << ")" << std::endl;
-		// -----for saving map-----
-//		dmap << "(" << p.X << "," << p.Y << "," << p.Z << "):{";
-//		for (u32 i = 0; i < MAP_BLOCKSIZE * MAP_BLOCKSIZE * MAP_BLOCKSIZE - 1;
-//				i++) {
-//			u8 d = (&data[8])[i + 1];
-//
-//			dmap << getNodeType(d) << ",";
-//		}
-//		dmap
-//				<< getNodeType(
-//						(&data[8])[MAP_BLOCKSIZE * MAP_BLOCKSIZE * MAP_BLOCKSIZE])
-//				<< "}" << std::endl;
-
 		{ //envlock
 			JMutexAutoLock envlock(m_env_mutex);
 
@@ -435,6 +452,10 @@ void Client::removeNode(v3s16 nodepos) {
 		return;
 	}
 
+	// -----change node-----
+	std::array<int, 3> idx = { nodepos.X, nodepos.Y, nodepos.Z };
+	m_nodes[idx] = 254;
+
 	SharedBuffer<u8> data(8);
 	writeU16(&data[0], TOSERVER_REMOVENODE);
 	writeS16(&data[2], nodepos.X);
@@ -452,6 +473,10 @@ void Client::addNode(v3s16 nodepos, MapNode n) {
 		// Fail silently
 		return;
 	}
+
+	// -----change node-----
+	std::array<int, 3> idx = { nodepos.X, nodepos.Y, nodepos.Z };
+	m_nodes[idx] = getNodeType(n.d);
 
 	u8 datasize = 8 + MapNode::serializedLength();
 	SharedBuffer<u8> data(datasize);

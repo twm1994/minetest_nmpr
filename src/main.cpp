@@ -841,7 +841,7 @@ int main() {
 			} // if (receiver.isPaused) {} else
 
 		}
-//		client.saveMap();
+		client.saveMap();
 		if (server != NULL)
 			delete server;
 
