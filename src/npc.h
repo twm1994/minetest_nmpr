@@ -137,7 +137,6 @@ private:
 	bool jump_trigger; // set NPC jumping  
 	scene::IAnimatedMesh*           avatar;
 	scene::IAnimatedMeshSceneNode*  avatar_node;
-	video::SMaterial                material;
 	core::aabbox3d<f32> m_box;
 };
 
