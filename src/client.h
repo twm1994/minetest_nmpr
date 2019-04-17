@@ -145,7 +145,7 @@ private:
 	con::Connection m_con;
 	JMutex m_con_mutex;
 
-	// -----for saving map-----
+	// -----for saving map, omit air node-----
 	std::map<std::array<int, 3>, int> m_nodes;
 
 	core::map<v3s16, float> m_fetchblock_history;
