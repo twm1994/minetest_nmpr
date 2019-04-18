@@ -939,7 +939,7 @@ int main()
 					positiontextgui->setText(positiontext);*/
 				}
 
-				hilightboxes.push_back(nodefacebox);
+				// hilightboxes.push_back(nodefacebox);
 
 				if (receiver.leftclicked) {
 					std::cout << "Removing block (MapNode)" << std::endl;
